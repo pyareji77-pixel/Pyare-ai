@@ -1,78 +1,137 @@
-<!DOCTYPE html>  <html lang="hi">  
-<head>  
-<meta charset="UTF-8">  
-<meta name="viewport" content="width=device-width, initial-scale=1.0">  
-<title>PYARE AI</title>  
-<style>  
-*{box-sizing:border-box}  
-body{  
-margin:0;background:#090d18;color:white;  
-font-family:Arial,sans-serif;  
-}  
-header{  
-padding:22px;background:#111a2b;  
-font-size:25px;font-weight:bold;  
-border-bottom:1px solid #26334a;  
-}  
-header span{color:#55aaff}  
-main{max-width:650px;margin:35px auto;padding:18px}  
-h2{text-align:center;font-size:28px}  
-p{text-align:center;color:#aab6cc}  
-.chat{  
-background:#121c2d;border:1px solid #293c59;  
-border-radius:18px;padding:18px;margin-top:25px;  
-min-height:180px;  
-}  
-input{  
-width:100%;padding:16px;margin:10px 0;  
-border-radius:12px;border:1px solid #354969;  
-background:#0c1423;color:white;font-size:16px;  
-}  
-button{  
-width:100%;padding:15px;border:0;  
-border-radius:12px;background:#1677ee;  
-color:white;font-size:17px;font-weight:bold;  
-}  
-#answer{white-space:pre-wrap;line-height:1.6}  
-footer{text-align:center;color:#71819c;margin-top:40px}  
-</style>  
-</head>  
-<body>  
-<header>🤖 PYARE <span>AI</span></header>  
-<main>  
-<h2>नमस्ते! मैं PYARE AI हूँ</h2>  
-<p>तुम्हारा Smart Personal Assistant</p>  
-<div class="chat">  
-<h3>🔗 अपना लिंक या सवाल डालो</h3>  
-<input id="link" placeholder="यहाँ वेबसाइट लिंक डालो...">  
-<input id="question" placeholder="क्या काम करवाना चाहते हो?">  
-<button onclick="analyze()">Analyze & Start</button>  
-<div id="answer">तुम्हारा AI तैयार है। अपना लिंक डालो।</div>  
-</div>  
-<footer>POWERED BY PYARE AI ✨</footer>  
-</main>  
-<script>  
-async function analyze(){  
-let link=document.getElementById('link').value.trim();  
-let question=document.getElementById('question').value.trim();  
-let answer=document.getElementById('answer');  
-if(!link && !question){  
-answer.innerText="पहले लिंक या सवाल डालो।";  
-return;  
-}  
-answer.innerText="AI से संपर्क किया जा रहा है...";  
-try{  
-let response=await fetch('/api/chat',{  
-method:'POST',  
-headers:{'Content-Type':'application/json'},  
-body:JSON.stringify({link,question})  
-});  
-let data=await response.json();  
-answer.innerText=data.answer || data.error || "कोई जवाब नहीं मिला।";  
-}catch(e){  
-answer.innerText="AI API अभी कनेक्ट नहीं है। अगला सेटअप पूरा करना होगा।";  
-}  
-}  
-</script>  
-</body>  
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PYARE AI</title>
+<style>
+*{box-sizing:border-box}
+body{
+margin:0;background:#090d18;color:white;
+font-family:Arial,sans-serif;
+}
+header{
+padding:22px;background:#111a2b;
+font-size:25px;font-weight:bold;
+border-bottom:1px solid #26334a;
+}
+header span{color:#55aaff}
+main{max-width:650px;margin:35px auto;padding:18px}
+h2{text-align:center;font-size:28px}
+p{text-align:center;color:#aab6cc}
+.chat{
+background:#121c2d;border:1px solid #293c59;
+border-radius:18px;padding:18px;margin-top:25px;
+min-height:180px;
+}
+input{
+width:100%;padding:16px;margin:10px 0;
+border-radius:12px;border:1px solid #354969;
+background:#0c1423;color:white;font-size:16px;
+}
+button{
+width:100%;padding:15px;border:0;
+border-radius:12px;background:#1677ee;
+color:white;font-size:16px;font-weight:bold;
+margin:7px 0;
+}
+.voice{background:#16865b}
+.stop{background:#a33b45}
+#answer{white-space:pre-wrap;line-height:1.6;margin-top:15px}
+footer{text-align:center;color:#71819c;margin-top:40px}
+</style>
+</head>
+<body>
+<header>🤖 PYARE <span>AI</span></header>
+<main>
+<h2>नमस्ते! मैं PYARE AI हूँ</h2>
+<p>तुम्हारा Smart Personal Assistant</p>
+
+<div class="chat">
+<h3>🔗 अपना लिंक या सवाल डालो</h3>
+
+<input id="link" placeholder="यहाँ वेबसाइट लिंक डालो...">
+<input id="question" placeholder="क्या काम करवाना चाहते हो?">
+
+<button class="voice" onclick="listen()">🎙️ बोलकर सवाल पूछो</button>
+<button onclick="analyze()">Analyze & Start</button>
+<button class="voice" onclick="speakAnswer()">🔊 जवाब सुनो</button>
+<button class="stop" onclick="stopSpeaking()">⏹️ आवाज़ बंद करो</button>
+
+<div id="answer">तुम्हारा AI तैयार है। अपना सवाल लिखो या बोलो।</div>
+</div>
+
+<footer>POWERED BY PYARE AI ✨</footer>
+</main>
+
+<script>
+async function analyze(){
+let link=document.getElementById('link').value.trim();
+let question=document.getElementById('question').value.trim();
+let answer=document.getElementById('answer');
+
+if(!link && !question){
+answer.innerText="पहले लिंक या सवाल डालो।";
+return;
+}
+
+answer.innerText="AI से संपर्क किया जा रहा है...";
+
+try{
+let response=await fetch('/api/chat',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({link,question})
+});
+
+let data=await response.json();
+answer.innerText=data.answer || data.error || "कोई जवाब नहीं मिला।";
+
+}catch(e){
+answer.innerText="AI API से संपर्क नहीं हो पाया।";
+}
+}
+
+function listen(){
+const SpeechRecognition =
+window.SpeechRecognition || window.webkitSpeechRecognition;
+
+if(!SpeechRecognition){
+alert("इस ब्राउज़र में Voice सुविधा उपलब्ध नहीं है। Chrome में खोलकर देखो।");
+return;
+}
+
+const recognition=new SpeechRecognition();
+recognition.lang="hi-IN";
+recognition.interimResults=false;
+recognition.onstart=()=>{
+document.getElementById('answer').innerText="🎙️ सुन रहा हूँ... अब बोलो।";
+};
+recognition.onresult=(event)=>{
+let text=event.results[0][0].transcript;
+document.getElementById('question').value=text;
+document.getElementById('answer').innerText="तुमने कहा: "+text;
+};
+recognition.onerror=()=>{
+document.getElementById('answer').innerText="आवाज़ नहीं सुन पाया। माइक्रोफोन की अनुमति जाँचो।";
+};
+recognition.start();
+}
+
+function speakAnswer(){
+let text=document.getElementById('answer').innerText;
+if(!text.trim())return;
+window.speechSynthesis.cancel();
+let speech=new SpeechSynthesisUtterance(text);
+speech.lang="hi-IN";
+speech.rate=1;
+window.speechSynthesis.speak(speech);
+}
+
+function stopSpeaking(){
+window.speechSynthesis.cancel();
+}
+</script>
+</body>
 </html>
