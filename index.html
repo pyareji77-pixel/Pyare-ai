@@ -105,6 +105,54 @@ footer{text-align:center;color:#71819c;margin-top:40px}
 <footer>POWERED BY PYARE AI ✨</footer>
 </main>
 
+async function checkPhotoQuality() {
+  const file = document.getElementById("imageInput").files[0];
+  const result = document.getElementById("qualityAnswer");
+
+  if (!file) {
+    result.innerText = "पहले फोटो अपलोड करो।";
+    return;
+  }
+
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+    result.innerText = "JPG, PNG या WEBP फोटो चुनो।";
+    return;
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    result.innerText = "5 MB से छोटी फोटो चुनो।";
+    return;
+  }
+
+  result.innerText = "🔍 फोटो की Quality जाँची जा रही है...";
+
+  try {
+    const imageBase64 = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        question: "इस फोटो की गुणवत्ता जाँचो। स्पष्टता, रोशनी, धुंधलापन, रंग और कंपोजिशन का आकलन करो। सुधार के आसान सुझाव दो।",
+        imageBase64,
+        mimeType: file.type
+      })
+    });
+
+    const data = await response.json();
+
+    result.innerText = data.answer || data.error || "जाँच पूरी नहीं हुई।";
+
+  } catch (error) {
+    result.innerText = "फोटो जाँचने में समस्या हुई।";
+  }
+}
+
 <script>
 
 
