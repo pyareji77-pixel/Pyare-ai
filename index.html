@@ -5,45 +5,49 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PYARE AI</title>
+
 <style>
 *{box-sizing:border-box}
 body{
-margin:0;background:#090d18;color:white;
-font-family:Arial,sans-serif;
+ margin:0;background:#090d18;color:white;
+ font-family:Arial,sans-serif;
 }
 header{
-padding:22px;background:#111a2b;
-font-size:25px;font-weight:bold;
-border-bottom:1px solid #26334a;
+ padding:22px;background:#111a2b;
+ font-size:25px;font-weight:bold;
+ border-bottom:1px solid #26334a;
 }
 header span{color:#55aaff}
-main{max-width:650px;margin:35px auto;padding:18px}
+main{max-width:650px;margin:25px auto;padding:18px}
 h2{text-align:center;font-size:28px}
 p{text-align:center;color:#aab6cc}
 .chat{
-background:#121c2d;border:1px solid #293c59;
-border-radius:18px;padding:18px;margin-top:25px;
-min-height:180px;
+ background:#121c2d;border:1px solid #293c59;
+ border-radius:18px;padding:18px;margin-top:20px;
 }
 input{
-width:100%;padding:16px;margin:10px 0;
-border-radius:12px;border:1px solid #354969;
-background:#0c1423;color:white;font-size:16px;
+ width:100%;padding:14px;margin:9px 0;
+ border-radius:12px;border:1px solid #354969;
+ background:#0c1423;color:white;font-size:16px;
 }
 button{
-width:100%;padding:15px;border:0;
-border-radius:12px;background:#1677ee;
-color:white;font-size:16px;font-weight:bold;
-margin:7px 0;
+ width:100%;padding:14px;border:0;
+ border-radius:12px;background:#1677ee;
+ color:white;font-size:16px;font-weight:bold;
+ margin:7px 0;
 }
 .voice{background:#16865b}
 .stop{background:#a33b45}
-#answer{white-space:pre-wrap;line-height:1.6;margin-top:15px}
-footer{text-align:center;color:#71819c;margin-top:40px}
+#answer,#qualityAnswer,#memoryAnswer,#toolAnswer{
+ white-space:pre-wrap;line-height:1.6;margin-top:15px;
+}
+footer{text-align:center;color:#71819c;margin-top:35px}
 </style>
 </head>
+
 <body>
 <header>🤖 PYARE <span>AI</span></header>
+
 <main>
 <h2>नमस्ते! मैं PYARE AI हूँ</h2>
 <p>तुम्हारा Smart Personal Assistant</p>
@@ -51,31 +55,29 @@ footer{text-align:center;color:#71819c;margin-top:40px}
 <div class="chat">
 <h3>🔗 अपना लिंक या सवाल डालो</h3>
 
-<input id="link" placeholder="यहाँ वेबसाइट लिंक डालो...">
-<input id="question" placeholder="क्या काम करवाना चाहते हो?">
-<input
-  type="file"
-  id="imageInput"
-  accept="image/*"
->
-<div id="imagePreview"></div>
-  <div class="chat">
-<h3>📸 PYARE AI PHOTO QUALITY</h3>
+<input id="link" placeholder="वेबसाइट लिंक डालो">
+<input id="question" placeholder="अपना सवाल लिखो">
 
-<button onclick="checkPhotoQuality()">
-🔍 Check Photo Quality
-</button>
+<input type="file" id="imageInput" accept="image/jpeg,image/png,image/webp">
 
-<div id="qualityAnswer"></div>
-  </div>
-<button class="voice" onclick="listen()">🎙️ बोलकर सवाल पूछो</button><button style="background:#9b59b6" onclick="startAuto()">🤖 JARVIS AUTO MODE चालू</button>
+<button onclick="analyze()">🚀 Analyze & Start</button>
+
+<button class="voice" onclick="listen()">🎙️ बोलकर सवाल पूछो</button>
+<button style="background:#9b59b6" onclick="startAuto()">🤖 JARVIS AUTO MODE चालू</button>
 <button class="stop" onclick="stopAuto()">⏹️ JARVIS बंद करो</button>
-<button onclick="analyze()">Analyze & Start</button>
+
 <button class="voice" onclick="speakAnswer()">🔊 जवाब सुनो</button>
-<button class="stop" onclick="stopSpeaking()">⏹️ आवाज़ बंद करो</button>
+<button class="stop" onclick="stopSpeaking()">🔇 आवाज़ बंद करो</button>
 
 <div id="answer">तुम्हारा AI तैयार है। अपना सवाल लिखो या बोलो।</div>
 </div>
+
+<div class="chat">
+<h3>📸 PYARE AI PHOTO QUALITY</h3>
+<button onclick="checkPhotoQuality()">🔍 Check Photo Quality</button>
+<div id="qualityAnswer"></div>
+</div>
+
 <div class="chat">
 <h3>🧠 PYARE AI MEMORY</h3>
 <input id="memoryInput" placeholder="मुझे क्या याद रखना चाहिए?">
@@ -84,150 +86,357 @@ footer{text-align:center;color:#71819c;margin-top:40px}
 <button class="stop" onclick="clearMemory()">🗑️ यादें मिटाओ</button>
 <div id="memoryAnswer"></div>
 </div>
-  <div class="chat">
+
+<div class="chat">
 <h3>🛠️ PYARE AI SMART TOOLS</h3>
-
 <button onclick="openGoogle()">🌐 Google खोलो</button>
-
 <button onclick="openYouTube()">▶️ YouTube खोलो</button>
-</div>
-  <div class="chat">
-<h3>🧮 PYARE AI TOOLS</h3>
-
 <button onclick="openCalculator()">🧮 Calculator खोलो</button>
-
-<button onclick="tellTime()">🕒 अभी का समय बताओ</button>
-
-<button onclick="tellDate()">📅 आज की तारीख बताओ</button>
-
+<button onclick="tellTime()">🕒 अभी का समय</button>
+<button onclick="tellDate()">📅 आज की तारीख</button>
 <div id="toolAnswer"></div>
 </div>
+
+<div class="chat">
+<h3>📱 PYARE AI WHATSAPP & CONTACT</h3>
+<button onclick="openWhatsApp()">WhatsApp खोलो</button>
+<button onclick="openWhatsAppCall()">📞 WhatsApp Call</button>
+<button onclick="openContact()">☎️ फोन से Call लगाओ</button>
+<p>बोलकर भी कह सकते हो: WhatsApp खोलो, WhatsApp Call लगाओ या Call लगाओ।</p>
+</div>
+
 <footer>POWERED BY PYARE AI ✨</footer>
 </main>
 
-async function checkPhotoQuality() {
-  const file = document.getElementById("imageInput").files[0];
-  const result = document.getElementById("qualityAnswer");
-
-  if (!file) {
-    result.innerText = "पहले फोटो अपलोड करो।";
-    return;
-  }
-
-  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-    result.innerText = "JPG, PNG या WEBP फोटो चुनो।";
-    return;
-  }
-
-  if (file.size > 5 * 1024 * 1024) {
-    result.innerText = "5 MB से छोटी फोटो चुनो।";
-    return;
-  }
-
-  result.innerText = "🔍 फोटो की Quality जाँची जा रही है...";
-
-  try {
-    const imageBase64 = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result.split(",")[1]);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-
-    const response = await fetch("/api/chat", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({
-        question: "इस फोटो की गुणवत्ता जाँचो। स्पष्टता, रोशनी, धुंधलापन, रंग और कंपोजिशन का आकलन करो। सुधार के आसान सुझाव दो।",
-        imageBase64,
-        mimeType: file.type
-      })
-    });
-
-    const data = await response.json();
-
-    result.innerText = data.answer || data.error || "जाँच पूरी नहीं हुई।";
-
-  } catch (error) {
-    result.innerText = "फोटो जाँचने में समस्या हुई।";
-  }
-}
-function openWhatsApp() {
-  window.open("https://www.whatsapp.com/", "_blank");
-}
-
-function openContact() {
-  alert("Contact feature opened!");
-}
-
-function handleVoiceCommand(command) {
-  command = command.toLowerCase();
-
-  if (command.includes("whatsapp")) {
-    openWhatsApp();
-  } 
-  else if (command.includes("contact")) {
-    openContact();
-  }
-}
 <script>
 
+// अपना Contact नंबर यहाँ डालना है।
+// भारत का नंबर 91 से शुरू करें।
+// अभी X की जगह असली नंबर नहीं डाला गया है।
+const CONTACT_NUMBER = "91XXXXXXXXXX";
+
+let recognition = null;
+let autoActive = false;
+let busy = false;
 
 async function analyze(){
-  let link = document.getElementById('link').value.trim();
-  let question = document.getElementById('question').value.trim();
-  let answer = document.getElementById('answer');
-  let imageInput = document.getElementById('imageInput');
-  let file = imageInput ? imageInput.files[0] : null;
+ const link = document.getElementById("link").value.trim();
+ const question = document.getElementById("question").value.trim();
+ const answer = document.getElementById("answer");
+ const file = document.getElementById("imageInput").files[0];
 
-  if (!link && !question && !file) {
-    answer.innerText = "पहले सवाल, लिंक या फोटो चुनो।";
-    return;
+ if(!link && !question && !file){
+  answer.innerText="पहले सवाल, लिंक या फोटो चुनो।";
+  return;
+ }
+
+ if(file && !["image/jpeg","image/png","image/webp"].includes(file.type)){
+  answer.innerText="JPG, PNG या WEBP फोटो चुनो।";
+  return;
+ }
+
+ if(file && file.size > 3*1024*1024){
+  answer.innerText="कृपया 3 MB से छोटी फोटो चुनो।";
+  return;
+ }
+
+ answer.innerText="PYARE AI सोच रहा है...";
+
+ try{
+  let imageBase64="";
+  let mimeType="";
+
+  if(file){
+   mimeType=file.type;
+   imageBase64=await new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=()=>resolve(reader.result.split(",")[1]);
+    reader.onerror=reject;
+    reader.readAsDataURL(file);
+   });
   }
 
-  if (file && !file.type.startsWith("image/")) {
-    answer.innerText = "कृपया सही फोटो चुनो।";
-    return;
-  }
+  const response=await fetch("/api/chat",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({link,question,imageBase64,mimeType})
+  });
 
-  if (file && file.size > 5 * 1024 * 1024) {
-    answer.innerText = "फोटो 5 MB से छोटी चुनो।";
-    return;
-  }
+  const data=await response.json();
+  answer.innerText=data.answer || data.error || "कोई जवाब नहीं मिला।";
 
-  answer.innerText = "PYARE AI फोटो और सवाल पढ़ रहा है...";
+ }catch(error){
+  answer.innerText="समस्या हुई। इंटरनेट और API जाँचो।";
+ }
 
-  try {
-    let imageBase64 = "";
-    let mimeType = "";
-
-    if (file) {
-      mimeType = file.type;
-      imageBase64 = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result.split(",")[1]);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-    }
-
-    let response = await fetch('/api/chat', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        link,
-        question,
-        imageBase64,
-        mimeType
-      })
-    });
-
-    let data = await response.json();
-    answer.innerText = data.answer || data.error || "कोई जवाब नहीं मिला।";
-
-  } catch(e) {
-    answer.innerText = "फोटो भेजने में समस्या हुई। दोबारा कोशिश करो।";
-  }
+ busy=false;
+ speakAnswer();
 }
 
-  
+async function checkPhotoQuality(){
+ const file=document.getElementById("imageInput").files[0];
+ const result=document.getElementById("qualityAnswer");
+
+ if(!file){
+  result.innerText="पहले फोटो अपलोड करो।";
+  return;
+ }
+
+ if(!["image/jpeg","image/png","image/webp"].includes(file.type)){
+  result.innerText="JPG, PNG या WEBP फोटो चुनो।";
+  return;
+ }
+
+ if(file.size>3*1024*1024){
+  result.innerText="3 MB से छोटी फोटो चुनो।";
+  return;
+ }
+
+ result.innerText="फोटो की Quality जाँची जा रही है...";
+
+ try{
+  const imageBase64=await new Promise((resolve,reject)=>{
+   const reader=new FileReader();
+   reader.onload=()=>resolve(reader.result.split(",")[1]);
+   reader.onerror=reject;
+   reader.readAsDataURL(file);
+  });
+
+  const response=await fetch("/api/chat",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({
+    question:"इस फोटो की गुणवत्ता जाँचो। स्पष्टता, रोशनी, धुंधलापन, रंग और कंपोजिशन का आकलन करो। सुधार के आसान सुझाव दो।",
+    imageBase64,
+    mimeType:file.type
+   })
+  });
+
+  const data=await response.json();
+  result.innerText=data.answer || data.error || "जाँच पूरी नहीं हुई।";
+
+ }catch(error){
+  result.innerText="फोटो जाँचने में समस्या हुई।";
+ }
+}
+
+// VOICE ASSISTANT
+
+function createRecognition(){
+ const SpeechAPI=window.SpeechRecognition || window.webkitSpeechRecognition;
+
+ if(!SpeechAPI){
+  alert("तुम्हारे ब्राउज़र में Voice Recognition उपलब्ध नहीं है। Chrome में कोशिश करो।");
+  return null;
+ }
+
+ const r=new SpeechAPI();
+ r.lang="hi-IN";
+ r.continuous=false;
+ r.interimResults=false;
+
+ return r;
+}
+
+function listen(){
+ autoActive=false;
+ stopSpeaking();
+ startListening();
+}
+
+function startListening(){
+ recognition=createRecognition();
+ if(!recognition)return;
+
+ recognition.onresult=async function(event){
+  const command=event.results[0][0].transcript;
+  document.getElementById("question").value=command;
+
+  if(handleVoiceCommand(command)){
+   busy=false;
+   return;
+  }
+
+  busy=true;
+  await analyze();
+ };
+
+ recognition.onerror=function(){
+  document.getElementById("answer").innerText="आवाज़ सुनने में समस्या हुई। दोबारा कोशिश करो।";
+  busy=false;
+ };
+
+ recognition.onend=function(){
+  if(autoActive && !busy){
+   setTimeout(autoListen,800);
+  }
+ };
+
+ try{
+  recognition.start();
+ }catch(error){}
+}
+
+function startAuto(){
+ autoActive=true;
+ document.getElementById("answer").innerText="JARVIS चालू है। अब बोलकर सवाल पूछो।";
+ autoListen();
+}
+
+function autoListen(){
+ if(!autoActive || busy)return;
+ startListening();
+}
+
+function stopAuto(){
+ autoActive=false;
+ busy=false;
+ if(recognition){
+  try{recognition.stop();}catch(error){}
+ }
+ stopSpeaking();
+ document.getElementById("answer").innerText="JARVIS बंद हो गया।";
+}
+
+// VOICE COMMANDS
+
+function handleVoiceCommand(command){
+ const c=command.toLowerCase();
+
+ if(c.includes("whatsapp") && (c.includes("call") || c.includes("कॉल"))){
+  openWhatsAppCall();
+  return true;
+ }
+
+ if(c.includes("whatsapp") || c.includes("व्हाट्सएप")){
+  openWhatsApp();
+  return true;
+ }
+
+ if(c.includes("contact") || c.includes("कॉल") || c.includes("call")){
+  openContact();
+  return true;
+ }
+
+ if(c.includes("youtube")){
+  openYouTube();
+  return true;
+ }
+
+ if(c.includes("google")){
+  openGoogle();
+  return true;
+ }
+
+ return false;
+}
+
+// SPEAK ANSWER
+
+function speakAnswer(){
+ const text=document.getElementById("answer").innerText;
+
+ if(!text)return;
+
+ window.speechSynthesis.cancel();
+
+ const speech=new SpeechSynthesisUtterance(text);
+ speech.lang="hi-IN";
+ speech.rate=1;
+
+ speech.onend=function(){
+  if(autoActive){
+   busy=false;
+   autoListen();
+  }
+ };
+
+ window.speechSynthesis.speak(speech);
+}
+
+function stopSpeaking(){
+ window.speechSynthesis.cancel();
+}
+
+// WHATSAPP AND CONTACT
+
+function openWhatsApp(){
+ window.open("https://www.whatsapp.com/","_blank");
+}
+
+function validNumber(){
+ return /^[0-9]{10,15}$/.test(CONTACT_NUMBER);
+}
+
+function openWhatsAppCall(){
+ if(!validNumber()){
+  alert("पहले कोड में CONTACT_NUMBER की जगह अपना अनुमति वाला नंबर डालो।");
+  return;
+ }
+
+ window.open("https://wa.me/"+CONTACT_NUMBER,"_blank");
+}
+
+function openContact(){
+ if(!validNumber()){
+  alert("पहले CONTACT_NUMBER में नंबर सेट करो।");
+  return;
+ }
+
+ window.location.href="tel:+"+CONTACT_NUMBER;
+}
+
+// SMART TOOLS
+
+function openGoogle(){
+ window.open("https://www.google.com/","_blank");
+}
+
+function openYouTube(){
+ window.open("https://www.youtube.com/","_blank");
+}
+
+function openCalculator(){
+ window.open("https://www.google.com/search?q=calculator","_blank");
+}
+
+function tellTime(){
+ document.getElementById("toolAnswer").innerText=
+ "अभी समय है: "+new Date().toLocaleTimeString("hi-IN");
+}
+
+function tellDate(){
+ document.getElementById("toolAnswer").innerText=
+ "आज की तारीख: "+new Date().toLocaleDateString("hi-IN");
+}
+
+// MEMORY
+
+function saveMemory(){
+ const input=document.getElementById("memoryInput");
+ const value=input.value.trim();
+
+ if(!value)return;
+
+ let memories=JSON.parse(localStorage.getItem("pyareMemory") || "[]");
+ memories.push(value);
+ localStorage.setItem("pyareMemory",JSON.stringify(memories));
+
+ input.value="";
+ document.getElementById("memoryAnswer").innerText="याद रख लिया।";
+}
+
+function showMemory(){
+ const memories=JSON.parse(localStorage.getItem("pyareMemory") || "[]");
+ document.getElementById("memoryAnswer").innerText=
+ memories.length ? memories.join("\n") : "अभी कोई यादें सेव नहीं हैं।";
+}
+
+function clearMemory(){
+ localStorage.removeItem("pyareMemory");
+ document.getElementById("memoryAnswer").innerText="यादें मिटा दी गई हैं।";
+}
+
+</script>
+</body>
+</html>
