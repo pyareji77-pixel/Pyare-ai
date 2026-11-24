@@ -133,6 +133,78 @@ window.speechSynthesis.speak(speech);
 function stopSpeaking(){
 window.speechSynthesis.cancel();
 }
+  let autoMode = false;
+let autoRecognition = null;
+
+function startAuto() {
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    alert("Chrome में Voice सुविधा उपलब्ध नहीं है।");
+    return;
+  }
+
+  autoMode = true;
+  document.getElementById("answer").innerText =
+    "🤖 JARVIS चालू है। अब बोलो...";
+  autoListen();
+}
+
+function autoListen() {
+  if (!autoMode) return;
+
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  autoRecognition = new SpeechRecognition();
+  autoRecognition.lang = "hi-IN";
+  autoRecognition.interimResults = false;
+
+  autoRecognition.onresult = async function(event) {
+    autoRecognition.stop();
+
+    const question = event.results[0][0].transcript;
+    document.getElementById("question").value = question;
+
+    await analyze();
+
+    if (!autoMode) return;
+
+    const text = document.getElementById("answer").innerText;
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.lang = "hi-IN";
+
+    speech.onend = function() {
+      if (autoMode) autoListen();
+    };
+
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(speech);
+  };
+
+  autoRecognition.onerror = function() {
+    if (autoMode) {
+      document.getElementById("answer").innerText =
+        "आवाज़ नहीं सुन पाया। दोबारा कोशिश करो।";
+    }
+  };
+
+  autoRecognition.start();
+}
+
+function stopAuto() {
+  autoMode = false;
+
+  if (autoRecognition) {
+    autoRecognition.stop();
+  }
+
+  window.speechSynthesis.cancel();
+
+  document.getElementById("answer").innerText =
+    "JARVIS बंद हो गया है।";
+}
 </script>
 </body>
 </html>
