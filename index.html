@@ -53,7 +53,12 @@ footer{text-align:center;color:#71819c;margin-top:40px}
 
 <input id="link" placeholder="यहाँ वेबसाइट लिंक डालो...">
 <input id="question" placeholder="क्या काम करवाना चाहते हो?">
-
+<input
+  type="file"
+  id="imageInput"
+  accept="image/*"
+>
+<div id="imagePreview"></div>
 <button class="voice" onclick="listen()">🎙️ बोलकर सवाल पूछो</button><button style="background:#9b59b6" onclick="startAuto()">🤖 JARVIS AUTO MODE चालू</button>
 <button class="stop" onclick="stopAuto()">⏹️ JARVIS बंद करो</button>
 <button onclick="analyze()">Analyze & Start</button>
