@@ -62,7 +62,14 @@ footer{text-align:center;color:#71819c;margin-top:40px}
 
 <div id="answer">तुम्हारा AI तैयार है। अपना सवाल लिखो या बोलो।</div>
 </div>
-
+<div class="chat">
+<h3>🧠 PYARE AI MEMORY</h3>
+<input id="memoryInput" placeholder="मुझे क्या याद रखना चाहिए?">
+<button onclick="saveMemory()">💾 याद रखो</button>
+<button onclick="showMemory()">📖 मेरी यादें दिखाओ</button>
+<button class="stop" onclick="clearMemory()">🗑️ यादें मिटाओ</button>
+<div id="memoryAnswer"></div>
+</div>
 <footer>POWERED BY PYARE AI ✨</footer>
 </main>
 
