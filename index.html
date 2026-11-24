@@ -97,204 +97,63 @@ footer{text-align:center;color:#71819c;margin-top:40px}
 </main>
 
 <script>
+
+
 async function analyze(){
-let link=document.getElementById('link').value.trim();
-let question=document.getElementById('question').value.trim();
-let answer=document.getElementById('answer');
+  let link = document.getElementById('link').value.trim();
+  let question = document.getElementById('question').value.trim();
+  let answer = document.getElementById('answer');
+  let imageInput = document.getElementById('imageInput');
+  let file = imageInput ? imageInput.files[0] : null;
 
-if(!link && !question){
-answer.innerText="पहले लिंक या सवाल डालो।";
-return;
-}
-
-answer.innerText="AI से संपर्क किया जा रहा है...";
-
-try{
-let response=await fetch('/api/chat',{
-method:'POST',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({link,question})
-});
-
-let data=await response.json();
-answer.innerText=data.answer || data.error || "कोई जवाब नहीं मिला।";
-
-}catch(e){
-answer.innerText="AI API से संपर्क नहीं हो पाया।";
-}
-}
-
-function listen(){
-const SpeechRecognition =
-window.SpeechRecognition || window.webkitSpeechRecognition;
-
-if(!SpeechRecognition){
-alert("इस ब्राउज़र में Voice सुविधा उपलब्ध नहीं है। Chrome में खोलकर देखो।");
-return;
-}
-
-const recognition=new SpeechRecognition();
-recognition.lang="hi-IN";
-recognition.interimResults=false;
-recognition.onstart=()=>{
-document.getElementById('answer').innerText="🎙️ सुन रहा हूँ... अब बोलो।";
-};
-recognition.onresult=(event)=>{
-let text=event.results[0][0].transcript;
-document.getElementById('question').value=text;
-document.getElementById('answer').innerText="तुमने कहा: "+text;
-};
-recognition.onerror=()=>{
-document.getElementById('answer').innerText="आवाज़ नहीं सुन पाया। माइक्रोफोन की अनुमति जाँचो।";
-};
-recognition.start();
-}
-
-function speakAnswer(){
-let text=document.getElementById('answer').innerText;
-if(!text.trim())return;
-window.speechSynthesis.cancel();
-let speech=new SpeechSynthesisUtterance(text);
-speech.lang="hi-IN";
-speech.rate=1;
-window.speechSynthesis.speak(speech);
-}
-
-function stopSpeaking(){
-window.speechSynthesis.cancel();
-}
-  let autoMode = false;
-let autoRecognition = null;
-
-function startAuto() {
-  const SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition;
-
-  if (!SpeechRecognition) {
-    alert("Chrome में Voice सुविधा उपलब्ध नहीं है।");
+  if (!link && !question && !file) {
+    answer.innerText = "पहले सवाल, लिंक या फोटो चुनो।";
     return;
   }
 
-  autoMode = true;
-  document.getElementById("answer").innerText =
-    "🤖 JARVIS चालू है। अब बोलो...";
-  autoListen();
-}
+  if (file && !file.type.startsWith("image/")) {
+    answer.innerText = "कृपया सही फोटो चुनो।";
+    return;
+  }
 
-function autoListen() {
-  if (!autoMode) return;
+  if (file && file.size > 5 * 1024 * 1024) {
+    answer.innerText = "फोटो 5 MB से छोटी चुनो।";
+    return;
+  }
 
-  const SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition;
+  answer.innerText = "PYARE AI फोटो और सवाल पढ़ रहा है...";
 
-  autoRecognition = new SpeechRecognition();
-  autoRecognition.lang = "hi-IN";
-  autoRecognition.interimResults = false;
+  try {
+    let imageBase64 = "";
+    let mimeType = "";
 
-  autoRecognition.onresult = async function(event) {
-    autoRecognition.stop();
-
-    const question = event.results[0][0].transcript;
-    document.getElementById("question").value = question;
-
-    await analyze();
-
-    if (!autoMode) return;
-
-    const text = document.getElementById("answer").innerText;
-    const speech = new SpeechSynthesisUtterance(text);
-    speech.lang = "hi-IN";
-
-    speech.onend = function() {
-      if (autoMode) autoListen();
-    };
-
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(speech);
-  };
-
-  autoRecognition.onerror = function() {
-    if (autoMode) {
-      document.getElementById("answer").innerText =
-        "आवाज़ नहीं सुन पाया। दोबारा कोशिश करो।";
+    if (file) {
+      mimeType = file.type;
+      imageBase64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(",")[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
     }
-  };
 
-  autoRecognition.start();
-}
+    let response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        link,
+        question,
+        imageBase64,
+        mimeType
+      })
+    });
 
-function stopAuto() {
-  autoMode = false;
+    let data = await response.json();
+    answer.innerText = data.answer || data.error || "कोई जवाब नहीं मिला।";
 
-  if (autoRecognition) {
-    autoRecognition.stop();
-  }
-
-  window.speechSynthesis.cancel();
-
-  document.getElementById("answer").innerText =
-    "JARVIS बंद हो गया है।";
-}
-  function saveMemory() {
-  let input = document.getElementById("memoryInput");
-  let value = input.value.trim();
-
-  if (!value) {
-    alert("पहले कुछ लिखो।");
-    return;
-  }
-
-  let memories = JSON.parse(localStorage.getItem("pyareMemory") || "[]");
-  memories.push(value);
-
-  localStorage.setItem("pyareMemory", JSON.stringify(memories));
-
-  input.value = "";
-  document.getElementById("memoryAnswer").innerText = "✅ याद रख लिया!";
-}
-
-function showMemory() {
-  let memories = JSON.parse(localStorage.getItem("pyareMemory") || "[]");
-
-  document.getElementById("memoryAnswer").innerText =
-    memories.length ? memories.map((m, i) => (i + 1) + ". " + m).join("\n") : "अभी कोई याद सेव नहीं है।";
-}
-
-function clearMemory() {
-  if (confirm("क्या तुम सारी सेव यादें मिटाना चाहते हो?")) {
-    localStorage.removeItem("pyareMemory");
-    document.getElementById("memoryAnswer").innerText = "यादें मिटा दी गईं।";
+  } catch(e) {
+    answer.innerText = "फोटो भेजने में समस्या हुई। दोबारा कोशिश करो।";
   }
 }
-  function openGoogle() {
-  window.open("https://www.google.com", "_blank");
-}
 
-function openYouTube() {
-  window.open("https://www.youtube.com", "_blank");
-}
-  function openCalculator() {
-  window.open("https://www.google.com/search?q=calculator", "_blank");
-}
-
-function tellTime() {
-  let now = new Date();
-  let time = now.toLocaleTimeString("hi-IN");
-  document.getElementById("toolAnswer").innerText =
-    "अभी समय है: " + time;
-}
-
-function tellDate() {
-  let today = new Date();
-  let date = today.toLocaleDateString("hi-IN", {
-    day: "numeric",
-    month: "long",
-    year: "numeric"
-  });
-
-  document.getElementById("toolAnswer").innerText =
-    "आज की तारीख है: " + date;
-}
-</script>
-</body>
-</html>
+  
