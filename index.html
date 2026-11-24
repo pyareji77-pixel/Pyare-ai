@@ -212,6 +212,37 @@ function stopAuto() {
   document.getElementById("answer").innerText =
     "JARVIS बंद हो गया है।";
 }
+  function saveMemory() {
+  let input = document.getElementById("memoryInput");
+  let value = input.value.trim();
+
+  if (!value) {
+    alert("पहले कुछ लिखो।");
+    return;
+  }
+
+  let memories = JSON.parse(localStorage.getItem("pyareMemory") || "[]");
+  memories.push(value);
+
+  localStorage.setItem("pyareMemory", JSON.stringify(memories));
+
+  input.value = "";
+  document.getElementById("memoryAnswer").innerText = "✅ याद रख लिया!";
+}
+
+function showMemory() {
+  let memories = JSON.parse(localStorage.getItem("pyareMemory") || "[]");
+
+  document.getElementById("memoryAnswer").innerText =
+    memories.length ? memories.map((m, i) => (i + 1) + ". " + m).join("\n") : "अभी कोई याद सेव नहीं है।";
+}
+
+function clearMemory() {
+  if (confirm("क्या तुम सारी सेव यादें मिटाना चाहते हो?")) {
+    localStorage.removeItem("pyareMemory");
+    document.getElementById("memoryAnswer").innerText = "यादें मिटा दी गईं।";
+  }
+}
 </script>
 </body>
 </html>
