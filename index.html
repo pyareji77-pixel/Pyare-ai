@@ -152,7 +152,24 @@ async function checkPhotoQuality() {
     result.innerText = "फोटो जाँचने में समस्या हुई।";
   }
 }
+function openWhatsApp() {
+  window.open("https://www.whatsapp.com/", "_blank");
+}
 
+function openContact() {
+  alert("Contact feature opened!");
+}
+
+function handleVoiceCommand(command) {
+  command = command.toLowerCase();
+
+  if (command.includes("whatsapp")) {
+    openWhatsApp();
+  } 
+  else if (command.includes("contact")) {
+    openContact();
+  }
+}
 <script>
 
 
