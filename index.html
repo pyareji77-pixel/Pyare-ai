@@ -438,6 +438,12 @@ function clearMemory(){
 }
 
 </script>
- alert("PYARE AI JavaScript चालू है");
+ document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("button").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      console.log("Button clicked:", btn.innerText);
+    });
+  });
+});
 </body>
 </html> 
