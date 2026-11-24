@@ -268,6 +268,28 @@ function clearMemory() {
 function openYouTube() {
   window.open("https://www.youtube.com", "_blank");
 }
+  function openCalculator() {
+  window.open("https://www.google.com/search?q=calculator", "_blank");
+}
+
+function tellTime() {
+  let now = new Date();
+  let time = now.toLocaleTimeString("hi-IN");
+  document.getElementById("toolAnswer").innerText =
+    "अभी समय है: " + time;
+}
+
+function tellDate() {
+  let today = new Date();
+  let date = today.toLocaleDateString("hi-IN", {
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  });
+
+  document.getElementById("toolAnswer").innerText =
+    "आज की तारीख है: " + date;
+}
 </script>
 </body>
 </html>
