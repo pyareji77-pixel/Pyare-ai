@@ -657,6 +657,7 @@ function pyareListen(){
   recognition.lang="hi-IN";
   recognition.onresult=function(event){
     const text=event.results[0][0].transcript;
+   alert("Aapne kaha: " + text);
     document.getElementById("pyareCommand").value=text;
     pyareRun();
   };
