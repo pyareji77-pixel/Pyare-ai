@@ -450,56 +450,75 @@ function clearMemory(){
     });
   });
 });
- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
- <script>
-const SUPABASE_URL = "अपना_PROJECT_URL";https://gukooeyjnjdkxfldxdpv.supabase.co/rest/v1/
-const SUPABASE_KEY = "अपनी_PUBLISHABLE_KEY";sb_publishable_PF0xiyR55d2BSZ5nTIx46w_J7R7mMEV
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://gukooeyjnjdkxfldxdpv.supabase.co";
+const SUPABASE_KEY = "YAHAN_APNI_PUBLISHABLE_KEY_DALO";
 
 const supabaseClient = supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
 </script>
- <div id="loginBox" style="background:#111a2b;padding:20px;border-radius:15px;margin:20px;color:white">
-<h2>PYARE AI Login</h2>
 
-  <input id="loginEmail" type="email" placeholder="Email"
-  style="width:100%;padding:12px;margin:8px 0">
+<div id="loginBox" style="background:#111a2b;padding:20px;border-radius:15px;margin:20px;color:white">
+  <h2>PYARE AI Login</h2>
 
-  <input id="loginPassword" type="password" placeholder="Password"
-  style="width:100%;padding:12px;margin:8px 0">
+  <input id="loginEmail" type="email" placeholder="Email">
 
-  <button onclick="ownerLogin()">Login</button>
-  <button onclick="ownerSignup()">Sign Up</button>
+  <input id="loginPassword" type="password" placeholder="Password">
+
+  <button type="button" onclick="ownerLogin()">Login</button>
+  <button type="button" onclick="ownerSignup()">Sign Up</button>
 
   <p id="loginMessage"></p>
 </div>
 
 <script>
 async function ownerLogin() {
-  const email = document.getElementById("loginEmail").value;
- alert("Login button working!");
+  const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
+  const msg = document.getElementById("loginMessage");
 
-  const { data, error } = await supabaseClient.auth.signInWithPassword({
-    email, password
-  });
+  msg.innerText = "Login हो रहा है...";
 
-  document.getElementById("loginMessage").innerText =
-    error ? error.message : "Login successful!";
+  try {
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) throw error;
+
+    msg.innerText = "Login Successful! स्वागत है PYARE AI में।";
+
+  } catch (error) {
+    msg.innerText = "Login Error: " + error.message;
+  }
 }
 
 async function ownerSignup() {
-  const email = document.getElementById("loginEmail").value;
+  const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
+  const msg = document.getElementById("loginMessage");
 
-  const { data, error } = await supabaseClient.auth.signUp({
-    email, password
-  });
+  try {
+    const { error } = await supabaseClient.auth.signUp({
+      email,
+      password
+    });
 
-  document.getElementById("loginMessage").innerText =
-    error ? error.message : "Signup successful!";
+    if (error) throw error;
+
+    msg.innerText = "Signup request सफल हुई।";
+
+  } catch (error) {
+    msg.innerText = "Signup Error: " + error.message;
+  }
 }
 </script>
+
 </body>
 </html> 
