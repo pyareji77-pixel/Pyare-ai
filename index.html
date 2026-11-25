@@ -521,5 +521,151 @@ async function ownerSignup() {
 }
 </script>
 
+<!-- PYARE AI SMART ASSISTANT -->
+<style>
+#pyareAssistant{
+  background:#111a2b;
+  color:white;
+  padding:18px;
+  margin:15px;
+  border-radius:18px;
+  font-family:Arial,sans-serif;
+}
+#pyareAssistant button{
+  background:#7c3aed;
+  color:white;
+  border:0;
+  border-radius:10px;
+  padding:12px;
+  margin:5px;
+  font-size:15px;
+}
+#pyareAssistant input{
+  width:95%;
+  padding:12px;
+  border-radius:10px;
+  border:0;
+  margin:8px 0;
+}
+#pyareResult{
+  background:#090d18;
+  padding:12px;
+  border-radius:10px;
+  min-height:45px;
+  margin-top:10px;
+}
+</style>
+
+<div id="pyareAssistant">
+  <h2>🤖 PYARE AI Assistant</h2>
+  <p>बोलकर या लिखकर अपना काम बताओ।</p>
+
+  <input id="pyareCommand"
+    placeholder="जैसे WhatsApp खोलो या YouTube खोलो">
+
+  <button onclick="pyareRun()">चलाओ</button>
+  <button onclick="pyareListen()">🎙️ बोलो</button>
+
+  <div id="pyareResult">मैं आपकी मदद के लिए तैयार हूँ।</div>
+
+  <hr>
+  <button onclick="pyareOpen('instagram')">Instagram</button>
+  <button onclick="pyareOpen('youtube')">YouTube</button>
+  <button onclick="pyareOpen('facebook')">Facebook</button>
+  <button onclick="pyareOpen('whatsapp')">WhatsApp</button>
+  <button onclick="pyareOpen('google')">Google</button>
+</div>
+
+<script>
+function pyareSay(text){
+  document.getElementById("pyareResult").innerText=text;
+  if("speechSynthesis" in window){
+    speechSynthesis.cancel();
+    speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+  }
+}
+
+function pyareOpen(app){
+  const links={
+    instagram:"https://www.instagram.com/",
+    youtube:"https://www.youtube.com/",
+    facebook:"https://www.facebook.com/",
+    whatsapp:"https://www.whatsapp.com/",
+    google:"https://www.google.com/"
+  };
+  window.open(links[app],"_blank");
+}
+
+function pyareRun(){
+  const input=document.getElementById("pyareCommand");
+  const cmd=input.value.toLowerCase().trim();
+
+  if(!cmd)return;
+
+  if(cmd.includes("instagram")){
+    pyareOpen("instagram");
+    pyareSay("Instagram खोल रहा हूँ।");
+  }
+  else if(cmd.includes("youtube")){
+    pyareOpen("youtube");
+    pyareSay("YouTube खोल रहा हूँ।");
+  }
+  else if(cmd.includes("facebook")){
+    pyareOpen("facebook");
+    pyareSay("Facebook खोल रहा हूँ।");
+  }
+  else if(cmd.includes("whatsapp")){
+    pyareOpen("whatsapp");
+    pyareSay("WhatsApp खोल रहा हूँ।");
+  }
+  else if(cmd.includes("google")){
+    pyareOpen("google");
+    pyareSay("Google खोल रहा हूँ।");
+  }
+  else if(cmd.includes("call") || cmd.includes("कॉल")){
+    pyareSay("फोन नंबर अपने डायलर में डालकर कॉल करने से पहले जाँच लें।");
+    window.location.href="tel:";
+  }
+  else if(cmd.includes("message") || cmd.includes("मैसेज")){
+    pyareSay("मैसेज भेजने के लिए अपने फोन के मैसेज ऐप का इस्तेमाल करें।");
+    window.location.href="sms:";
+  }
+  else if(cmd.includes("time") || cmd.includes("समय")){
+    pyareSay("अभी समय है "+new Date().toLocaleTimeString());
+  }
+  else if(cmd.includes("date") || cmd.includes("तारीख")){
+    pyareSay("आज की तारीख है "+new Date().toLocaleDateString());
+  }
+  else if(cmd.includes("search") || cmd.includes("सर्च")){
+    window.open("https://www.google.com/search?q="+encodeURIComponent(cmd),"_blank");
+    pyareSay("Google पर खोज रहा हूँ।");
+  }
+  else{
+    pyareSay("यह कमांड अभी उपलब्ध नहीं है।");
+  }
+}
+
+function pyareListen(){
+  const SpeechRecognition=window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if(!SpeechRecognition){
+    pyareSay("आपके ब्राउज़र में Voice Recognition उपलब्ध नहीं है।");
+    return;
+  }
+
+  const recognition=new SpeechRecognition();
+  recognition.lang="hi-IN";
+  recognition.onresult=function(event){
+    const text=event.results[0][0].transcript;
+    document.getElementById("pyareCommand").value=text;
+    pyareRun();
+  };
+  recognition.onerror=function(){
+    pyareSay("आवाज़ सुनने में समस्या आई। फिर कोशिश करें।");
+  };
+  recognition.start();
+}
+</script>
+
 </body>
 </html> 
