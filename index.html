@@ -460,5 +460,45 @@ const supabaseClient = supabase.createClient(
   SUPABASE_KEY
 );
 </script>
+ <div id="loginBox" style="background:#111a2b;padding:20px;border-radius:15px;margin:20px;color:white">
+  <h2>PYARE AI Login</h2>
+
+  <input id="loginEmail" type="email" placeholder="Email"
+  style="width:100%;padding:12px;margin:8px 0">
+
+  <input id="loginPassword" type="password" placeholder="Password"
+  style="width:100%;padding:12px;margin:8px 0">
+
+  <button onclick="ownerLogin()">Login</button>
+  <button onclick="ownerSignup()">Sign Up</button>
+
+  <p id="loginMessage"></p>
+</div>
+
+<script>
+async function ownerLogin() {
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email, password
+  });
+
+  document.getElementById("loginMessage").innerText =
+    error ? error.message : "Login successful!";
+}
+
+async function ownerSignup() {
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+
+  const { data, error } = await supabaseClient.auth.signUp({
+    email, password
+  });
+
+  document.getElementById("loginMessage").innerText =
+    error ? error.message : "Signup successful!";
+}
+</script>
 </body>
 </html> 
