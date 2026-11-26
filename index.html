@@ -602,110 +602,78 @@ function pyareRun(){
 
   if(!cmd) return;
 
-// PYARE AI SMART SEARCH
-if (/(search|सर्च|खोज|ढूंढ|ढूँढ|instagram|इंस्टाग्राम|इंस्टा|youtube|यूट्यूब|युट्यूब|facebook|फेसबुक)/i.test(cmd)) {
+  // SMART SEARCH
+  if (/(search|सर्च|खोज|ढूंढ|ढूँढ)/i.test(cmd)) {
 
-  if (/instagram|इंस्टाग्राम|इंस्टा/i.test(cmd)) {
-    site = "instagram.com";
-    query = query.replace(/instagram|इंस्टाग्राम|इंस्टा/gi, "");
-  } 
-  else if (/youtube|यूट्यूब|युट्यूब/i.test(cmd)) {
-    site = "youtube";
-    query = query.replace(/youtube|यूट्यूब|युट्यूब/gi, "");
+    let site = "";
+    let query = cmd;
+
+    if (/instagram|इंस्टाग्राम|इंस्टा/i.test(cmd)) {
+      site = "instagram.com";
+      query = query.replace(/instagram|इंस्टाग्राम|इंस्टा/gi, "");
+    }
+    else if (/youtube|यूट्यूब|युट्यूब/i.test(cmd)) {
+      site = "youtube";
+      query = query.replace(/youtube|यूट्यूब|युट्यूब/gi, "");
+    }
+    else if (/facebook|फेसबुक/i.test(cmd)) {
+      site = "facebook";
+      query = query.replace(/facebook|फेसबुक/gi, "");
+    }
+
+    query = query.replace(
+      /खोलो|खोल|open|search|सर्च|खोजो|खोज|ढूंढो|ढूँढो|और|पर|par|करो|करना|please|id/gi,
+      " "
+    ).trim();
+
+    if(query){
+      let url = site === "instagram.com"
+        ? "https://www.instagram.com/" + encodeURIComponent(query.replace(/^@/, "")) + "/"
+        : site === "youtube"
+        ? "https://www.youtube.com/results?search_query=" + encodeURIComponent(query)
+        : site === "facebook"
+        ? "https://www.facebook.com/search/top?q=" + encodeURIComponent(query)
+        : "https://www.google.com/search?q=" + encodeURIComponent(query);
+
+      window.open(url, "_blank");
+      pyareSay("आपकी सर्च खोल रहा हूँ।");
+    } else {
+      pyareSay("क्या सर्च करना है, बताइए।");
+    }
+    return;
   }
-  else if (/facebook|फेसबुक/i.test(cmd)) {
-    site = "facebook";
-    query = query.replace(/facebook|फेसबुक/gi, "");
-  }
 
-  query = query.replace(
-    /खोलो|खोल|open|search|सर्च|खोजो|खोज|ढूंढो|ढूँढो|और|पर|par|करो|करना|please|id/gi,
-    " "
-  ).trim();
-
-  if (query) {
-    let url = site === "instagram.com"
-  ? "https://www.instagram.com/" + encodeURIComponent(query.replace(/^@/, "")) + "/"
-  : site === "youtube"
-  ? "https://www.youtube.com/results?search_query=" + encodeURIComponent(query)
-  : site === "facebook"
-  ? "https://www.facebook.com/search/top?q=" + encodeURIComponent(query)
-  : "https://www.google.com/search?q=" + encodeURIComponent(query);
-    window.open(url, "_blank");
-    pyareSay("आपकी सर्च खोल रहा हूँ।");
-  } else {
-    pyareSay("क्या सर्च करना है, बताइए।");
-  }
-  return;
-}
-
-  if(
-    cmd.includes("instagram") ||
-    cmd.includes("इंस्टाग्राम") ||
-    cmd.includes("इंस्टा")
-  ){
+  if(cmd.includes("instagram") || cmd.includes("इंस्टाग्राम") || cmd.includes("इंस्टा")){
     pyareOpen("instagram");
     pyareSay("Instagram खोल रहा हूँ।");
   }
-  else if(
-    cmd.includes("youtube") ||
-    cmd.includes("यूट्यूब") ||
-    cmd.includes("युट्यूब")
-  ){
+  else if(cmd.includes("youtube") || cmd.includes("यूट्यूब") || cmd.includes("युट्यूब")){
     pyareOpen("youtube");
     pyareSay("YouTube खोल रहा हूँ।");
   }
-  else if(
-    cmd.includes("facebook") ||
-    cmd.includes("फेसबुक")
-  ){
+  else if(cmd.includes("facebook") || cmd.includes("फेसबुक")){
     pyareOpen("facebook");
     pyareSay("Facebook खोल रहा हूँ।");
   }
-  else if(
-    cmd.includes("whatsapp") ||
-    cmd.includes("व्हाट्सएप") ||
-    cmd.includes("व्हाट्सऐप")
-  ){
+  else if(cmd.includes("whatsapp") || cmd.includes("व्हाट्सएप") || cmd.includes("व्हाट्सऐप")){
     pyareOpen("whatsapp");
     pyareSay("WhatsApp खोल रहा हूँ।");
   }
-  else if(
-    cmd.includes("google") ||
-    cmd.includes("गूगल")
-  ){
+  else if(cmd.includes("google") || cmd.includes("गूगल")){
     pyareOpen("google");
     pyareSay("Google खोल रहा हूँ।");
   }
-  else if(
-    cmd.includes("time") ||
-    cmd.includes("समय") ||
-    cmd.includes("टाइम")
-  ){
+  else if(cmd.includes("time") || cmd.includes("समय") || cmd.includes("टाइम")){
     pyareSay("अभी समय है " + new Date().toLocaleTimeString());
   }
-  else if(
-    cmd.includes("date") ||
-    cmd.includes("तारीख")
-  ){
+  else if(cmd.includes("date") || cmd.includes("तारीख")){
     pyareSay("आज की तारीख है " + new Date().toLocaleDateString());
-  }
-  else if(
-    cmd.includes("search") ||
-    cmd.includes("सर्च") ||
-    cmd.includes("खोजो")
-  ){
-    window.open(
-      "https://www.google.com/search?q=" +
-      encodeURIComponent(cmd),
-      "_blank"
-    );
-    pyareSay("Google पर खोज रहा हूँ।");
   }
   else{
     pyareSay("यह कमांड अभी उपलब्ध नहीं है।");
   }
 }
+
 
 function pyareListen(){
   const SpeechRecognition =
