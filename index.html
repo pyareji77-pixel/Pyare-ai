@@ -602,6 +602,44 @@ function pyareRun(){
 
   if(!cmd) return;
 
+// PYARE AI SMART SEARCH
+if (/(search|सर्च|खोज|ढूंढ|ढूँढ)/i.test(cmd)) {
+  let site = "";
+  let query = cmd;
+
+  if (/instagram|इंस्टाग्राम|इंस्टा/i.test(cmd)) {
+    site = "instagram.com";
+    query = query.replace(/instagram|इंस्टाग्राम|इंस्टा/gi, "");
+  } 
+  else if (/youtube|यूट्यूब|युट्यूब/i.test(cmd)) {
+    site = "youtube";
+    query = query.replace(/youtube|यूट्यूब|युट्यूब/gi, "");
+  }
+  else if (/facebook|फेसबुक/i.test(cmd)) {
+    site = "facebook";
+    query = query.replace(/facebook|फेसबुक/gi, "");
+  }
+
+  query = query.replace(
+    /खोलो|खोल|open|search|सर्च|खोजो|खोज|ढूंढो|ढूँढो|और|पर|करो|करना|please|id/gi,
+    " "
+  ).trim();
+
+  if (query) {
+    let url = site === "youtube"
+      ? "https://www.youtube.com/results?search_query=" + encodeURIComponent(query)
+      : site
+      ? "https://www.google.com/search?q=" + encodeURIComponent("site:" + site + " " + query)
+      : "https://www.google.com/search?q=" + encodeURIComponent(query);
+
+    window.open(url, "_blank");
+    pyareSay("आपकी सर्च खोल रहा हूँ।");
+  } else {
+    pyareSay("क्या सर्च करना है, बताइए।");
+  }
+  return;
+}
+
   if(
     cmd.includes("instagram") ||
     cmd.includes("इंस्टाग्राम") ||
