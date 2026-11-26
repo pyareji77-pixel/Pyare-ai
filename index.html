@@ -621,17 +621,18 @@ if (/(search|सर्च|खोज|ढूंढ|ढूँढ)/i.test(cmd)) {
   }
 
   query = query.replace(
-    /खोलो|खोल|open|search|सर्च|खोजो|खोज|ढूंढो|ढूँढो|और|पर|करो|करना|please|id/gi,
+    /खोलो|खोल|open|search|सर्च|खोजो|खोज|ढूंढो|ढूँढो|और|पर|par|करो|करना|please|id/gi,
     " "
   ).trim();
 
   if (query) {
-    let url = site === "youtube"
-      ? "https://www.youtube.com/results?search_query=" + encodeURIComponent(query)
-      : site
-      ? "https://www.google.com/search?q=" + encodeURIComponent("site:" + site + " " + query)
-      : "https://www.google.com/search?q=" + encodeURIComponent(query);
-
+    let url = site === "instagram.com"
+  ? "https://www.instagram.com/" + encodeURIComponent(query.replace(/^@/, "")) + "/"
+  : site === "youtube"
+  ? "https://www.youtube.com/results?search_query=" + encodeURIComponent(query)
+  : site === "facebook"
+  ? "https://www.facebook.com/search/top?q=" + encodeURIComponent(query)
+  : "https://www.google.com/search?q=" + encodeURIComponent(query);
     window.open(url, "_blank");
     pyareSay("आपकी सर्च खोल रहा हूँ।");
   } else {
