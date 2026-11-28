@@ -432,12 +432,14 @@ function pyareOpen(app){
  if(links[app])window.open(links[app],"_blank");
 }
 
-function pyareRun(){
+
+async function pyareRun(){
  const input=document.getElementById("pyareCommand");
  const cmd=input.value.toLowerCase().trim().normalize("NFC");
+ const result=document.getElementById("pyareResult");
  if(!cmd)return;
 
- // REMINDER VOICE COMMAND
+ // REMINDER
  const reminderMatch=cmd.match(/(\d+)\s*(मिनट|minute|min|घंटे|घंटा|hour)/i);
  if(reminderMatch && /(याद|remind|बाद)/i.test(cmd)){
   const amount=Number(reminderMatch[1]);
@@ -524,19 +526,29 @@ function pyareRun(){
 
  // OPEN APPS
  if(/instagram|इंस्टाग्राम|इंस्टा/i.test(cmd)){
-  pyareOpen("instagram");pyareSay("Instagram खोल रहा हूँ।");return;
+  pyareOpen("instagram");
+  pyareSay("Instagram खोल रहा हूँ।");
+  return;
  }
  if(/youtube|यूट्यूब|युट्यूब/i.test(cmd)){
-  pyareOpen("youtube");pyareSay("YouTube खोल रहा हूँ।");return;
+  pyareOpen("youtube");
+  pyareSay("YouTube खोल रहा हूँ।");
+  return;
  }
  if(/facebook|फेसबुक/i.test(cmd)){
-  pyareOpen("facebook");pyareSay("Facebook खोल रहा हूँ।");return;
+  pyareOpen("facebook");
+  pyareSay("Facebook खोल रहा हूँ।");
+  return;
  }
  if(/whatsapp|व्हाट्सएप|व्हाट्सऐप/i.test(cmd)){
-  pyareOpen("whatsapp");pyareSay("WhatsApp खोल रहा हूँ।");return;
+  pyareOpen("whatsapp");
+  pyareSay("WhatsApp खोल रहा हूँ।");
+  return;
  }
  if(/google|गूगल/i.test(cmd)){
-  pyareOpen("google");pyareSay("Google खोल रहा हूँ।");return;
+  pyareOpen("google");
+  pyareSay("Google खोल रहा हूँ।");
+  return;
  }
 
  // CALCULATOR
@@ -545,8 +557,36 @@ function pyareRun(){
   return;
  }
 
- pyareSay("यह कमांड अभी उपलब्ध नहीं है।");
+ // GENERAL AI QUESTION - SEND TO YOUR AI API
+ result.innerText="PYARE AI सोच रहा है...";
+
+ try{
+  const response=await fetch("/api/chat",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({
+    link:"",
+    question:cmd,
+    imageBase64:"",
+    mimeType:""
+   })
+  });
+
+  const data=await response.json();
+
+  if(!response.ok){
+   throw new Error(data.error || "AI API में समस्या हुई।");
+  }
+
+  const answer=data.answer || data.error || "अभी जवाब नहीं मिला।";
+  pyareSay(answer);
+
+ }catch(error){
+  result.innerText="AI से जवाब नहीं मिला। इंटरनेट या API जाँचें।";
+  console.error("PYARE AI Error:",error);
+ }
 }
+
 
 // JARVIS MICROPHONE
 function pyareListen(){
