@@ -582,9 +582,11 @@ async function pyareRun(){
   const answer=data.answer || data.error || "अभी जवाब नहीं मिला।";
   pyareSay(answer);
 
- }catch(error){
+  }catch(error){
   result.innerText="AI से जवाब नहीं मिला। इंटरनेट या API जाँचें।";
   console.error("PYARE AI Error:",error);
+ }finally{
+  jarvisBusy=false;
  }
 }
 
