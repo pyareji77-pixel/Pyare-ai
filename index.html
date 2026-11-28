@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PYARE AI</title>
+<title>PYARE AI - JARVIS</title>
 
 <style>
 *{box-sizing:border-box}
@@ -18,120 +18,194 @@ header{
  border-bottom:1px solid #26334a;
 }
 header span{color:#55aaff}
-main{max-width:650px;margin:25px auto;padding:18px}
-h2{text-align:center;font-size:28px}
+main{max-width:700px;margin:20px auto;padding:15px}
+h2{text-align:center;font-size:27px}
 p{text-align:center;color:#aab6cc}
 .chat{
  background:#121c2d;border:1px solid #293c59;
- border-radius:18px;padding:18px;margin-top:20px;
+ border-radius:18px;padding:17px;margin:17px 0;
 }
 input{
- width:100%;padding:14px;margin:9px 0;
+ width:100%;padding:13px;margin:8px 0;
  border-radius:12px;border:1px solid #354969;
  background:#0c1423;color:white;font-size:16px;
 }
 button{
- width:100%;padding:14px;border:0;
+ width:100%;padding:13px;border:0;
  border-radius:12px;background:#1677ee;
  color:white;font-size:16px;font-weight:bold;
- margin:7px 0;
+ margin:6px 0;cursor:pointer;
 }
 .voice{background:#16865b}
 .stop{background:#a33b45}
-#answer,#qualityAnswer,#memoryAnswer,#toolAnswer{
- white-space:pre-wrap;line-height:1.6;margin-top:15px;
+.purple{background:#7c3aed}
+.result{
+ white-space:pre-wrap;line-height:1.6;
+ margin-top:12px;padding:10px;
+ background:#090d18;border-radius:10px;
+ min-height:35px;
 }
-footer{text-align:center;color:#71819c;margin-top:35px}
+footer{text-align:center;color:#71819c;margin:30px 0}
+.small{font-size:13px;color:#aab6cc}
 </style>
 </head>
- <div style="text-align:center;padding:15px">
-  <img src="pyare-ai-animation.gif"
-       alt="PYARE AI Robot"
-       style="width:220px;max-width:90%;border-radius:20px">
-</div>
 
 <body>
 <header>🤖 PYARE <span>AI</span></header>
 
 <main>
+
+<div style="text-align:center;padding:10px">
+ <img src="pyare-ai-animation.gif"
+ alt="PYARE AI Robot"
+ style="width:200px;max-width:90%;border-radius:20px">
+</div>
+
 <h2>नमस्ते! मैं PYARE AI हूँ</h2>
 <p>तुम्हारा Smart Personal Assistant</p>
 
+<!-- AI CHAT -->
 <div class="chat">
-<h3>🔗 अपना लिंक या सवाल डालो</h3>
-
+<h3>🔗 AI सवाल-जवाब</h3>
 <input id="link" placeholder="वेबसाइट लिंक डालो">
 <input id="question" placeholder="अपना सवाल लिखो">
-
-<input type="file" id="imageInput" accept="image/jpeg,image/png,image/webp">
+<input type="file" id="imageInput"
+ accept="image/jpeg,image/png,image/webp">
 
 <button onclick="analyze()">🚀 Analyze & Start</button>
-
 <button class="voice" onclick="listen()">🎙️ बोलकर सवाल पूछो</button>
-<button style="background:#9b59b6" onclick="startAuto()">🤖 JARVIS AUTO MODE चालू</button>
+<button class="purple" onclick="startAuto()">🤖 JARVIS AUTO MODE चालू</button>
 <button class="stop" onclick="stopAuto()">⏹️ JARVIS बंद करो</button>
-
 <button class="voice" onclick="speakAnswer()">🔊 जवाब सुनो</button>
 <button class="stop" onclick="stopSpeaking()">🔇 आवाज़ बंद करो</button>
-
-<div id="answer">तुम्हारा AI तैयार है। अपना सवाल लिखो या बोलो।</div>
+<div id="answer" class="result">तुम्हारा AI तैयार है।</div>
 </div>
 
+<!-- PHOTO -->
 <div class="chat">
-<h3>📸 PYARE AI PHOTO QUALITY</h3>
+<h3>📸 PHOTO QUALITY</h3>
 <button onclick="checkPhotoQuality()">🔍 Check Photo Quality</button>
-<div id="qualityAnswer"></div>
+<div id="qualityAnswer" class="result"></div>
 </div>
 
+<!-- MEMORY -->
 <div class="chat">
 <h3>🧠 PYARE AI MEMORY</h3>
 <input id="memoryInput" placeholder="मुझे क्या याद रखना चाहिए?">
 <button onclick="saveMemory()">💾 याद रखो</button>
 <button onclick="showMemory()">📖 मेरी यादें दिखाओ</button>
 <button class="stop" onclick="clearMemory()">🗑️ यादें मिटाओ</button>
-<div id="memoryAnswer"></div>
+<div id="memoryAnswer" class="result"></div>
 </div>
 
+<!-- JARVIS -->
 <div class="chat">
-<h3>🛠️ PYARE AI SMART TOOLS</h3>
+<h3>🤖 JARVIS PERSONAL ASSISTANT</h3>
+<p>बोलकर या लिखकर अपना काम बताओ।</p>
+
+<input id="pyareCommand"
+ placeholder="जैसे YouTube खोलो या 5 मिनट बाद याद दिलाना">
+
+<button onclick="pyareRun()">⚡ चलाओ</button>
+<button class="voice" onclick="pyareListen()">🎙️ बोलो</button>
+<button class="purple" onclick="jarvisAutoStart()">🔁 JARVIS लगातार सुनो</button>
+<button class="stop" onclick="jarvisAutoStop()">⏹️ सुनना बंद करो</button>
+
+<div id="pyareResult" class="result">
+मैं आपकी मदद के लिए तैयार हूँ।
+</div>
+</div>
+
+<!-- REMINDER -->
+<div class="chat">
+<h3>⏰ REMINDER</h3>
+<input id="reminderText" placeholder="किस बात की याद दिलानी है?">
+<input id="reminderMinutes" type="number" min="1"
+ placeholder="कितने मिनट बाद?">
+<button onclick="addReminder()">⏰ Reminder लगाओ</button>
+<div id="reminderResult" class="result"></div>
+</div>
+
+<!-- DAILY ROUTINE -->
+<div class="chat">
+<h3>📅 DAILY ROUTINE</h3>
+<input id="routineInput" placeholder="आज का काम लिखो">
+<button onclick="addRoutine()">➕ काम जोड़ो</button>
+<button onclick="showRoutine()">📖 आज के काम दिखाओ</button>
+<button class="stop" onclick="clearRoutine()">🗑️ Routine साफ करो</button>
+<div id="routineResult" class="result"></div>
+</div>
+
+<!-- SMART TOOLS -->
+<div class="chat">
+<h3>🛠️ SMART TOOLS</h3>
 <button onclick="openGoogle()">🌐 Google खोलो</button>
 <button onclick="openYouTube()">▶️ YouTube खोलो</button>
 <button onclick="openCalculator()">🧮 Calculator खोलो</button>
 <button onclick="tellTime()">🕒 अभी का समय</button>
 <button onclick="tellDate()">📅 आज की तारीख</button>
-<div id="toolAnswer"></div>
+<input id="calcInput" placeholder="जैसे 25+30*2">
+<button onclick="calculate()">गणना करो</button>
+<div id="toolAnswer" class="result"></div>
 </div>
 
+<!-- SOCIAL -->
 <div class="chat">
-<h3>📱 PYARE AI WHATSAPP & CONTACT</h3>
+<h3>📱 SOCIAL MEDIA</h3>
+<button onclick="pyareOpen('instagram')">Instagram</button>
+<button onclick="pyareOpen('youtube')">YouTube</button>
+<button onclick="pyareOpen('facebook')">Facebook</button>
+<button onclick="pyareOpen('whatsapp')">WhatsApp</button>
+<button onclick="pyareOpen('google')">Google</button>
+</div>
+
+<!-- CONTACT -->
+<div class="chat">
+<h3>📞 WHATSAPP & CONTACT</h3>
 <button onclick="openWhatsApp()">WhatsApp खोलो</button>
-<button onclick="openWhatsAppCall()">📞 WhatsApp Call</button>
-<button onclick="openContact()">☎️ फोन से Call लगाओ</button>
-<p>बोलकर भी कह सकते हो: WhatsApp खोलो, WhatsApp Call लगाओ या Call लगाओ।</p>
+<button onclick="openWhatsAppCall()">WhatsApp Contact</button>
+<button onclick="openContact()">फोन से Call लगाओ</button>
+<p class="small">फोन नंबर सेट करने के बाद ही Contact सुविधा काम करेगी।</p>
+</div>
+
+<!-- LOGIN -->
+<div class="chat">
+<h3>🔐 PYARE AI LOGIN</h3>
+<input id="loginEmail" type="email" placeholder="Email">
+<input id="loginPassword" type="password" placeholder="Password">
+<button onclick="ownerLogin()">Login</button>
+<button onclick="ownerSignup()">Sign Up</button>
+<div id="loginMessage" class="result"></div>
 </div>
 
 <footer>POWERED BY PYARE AI ✨</footer>
 </main>
 
-<script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-// अपना Contact नंबर यहाँ डालना है।
-// भारत का नंबर 91 से शुरू करें।
-// अभी X की जगह असली नंबर नहीं डाला गया है।
+<script>
+// SETTINGS
 const CONTACT_NUMBER = "91xxxxxxxxxx";
 
-let recognition = null;
-let autoActive = false;
-let busy = false;
+const SUPABASE_URL = "https://gukooeyjnjdkxfldxdpv.supabase.co";
+const SUPABASE_KEY = "sb_publishable_XuIgIwnfvtt86GgIijXpwQ_1EUjsHZc";
 
+let supabaseClient = null;
+if(window.supabase){
+ supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,SUPABASE_KEY
+ );
+}
+
+// AI CHAT
 async function analyze(){
- const link = document.getElementById("link").value.trim();
- const question = document.getElementById("question").value.trim();
- const answer = document.getElementById("answer");
- const file = document.getElementById("imageInput").files[0];
+ const link=document.getElementById("link").value.trim();
+ const question=document.getElementById("question").value.trim();
+ const answer=document.getElementById("answer");
+ const file=document.getElementById("imageInput").files[0];
 
  if(!link && !question && !file){
-  answer.innerText="पहले सवाल, लिंक या फोटो चुनो।";
+  answer.innerText="पहले सवाल, लिंक या फोटो डालो।";
   return;
  }
 
@@ -140,8 +214,8 @@ async function analyze(){
   return;
  }
 
- if(file && file.size > 3*1024*1024){
-  answer.innerText="कृपया 3 MB से छोटी फोटो चुनो।";
+ if(file && file.size>3*1024*1024){
+  answer.innerText="3 MB से छोटी फोटो चुनो।";
   return;
  }
 
@@ -168,16 +242,13 @@ async function analyze(){
   });
 
   const data=await response.json();
-  answer.innerText=data.answer || data.error || "कोई जवाब नहीं मिला।";
-
+  answer.innerText=data.answer || data.error || "जवाब नहीं मिला।";
  }catch(error){
-  answer.innerText="समस्या हुई। इंटरनेट और API जाँचो।";
+  answer.innerText="इंटरनेट या API में समस्या हुई।";
  }
-
- busy=false;
- speakAnswer();
 }
 
+// PHOTO QUALITY
 async function checkPhotoQuality(){
  const file=document.getElementById("imageInput").files[0];
  const result=document.getElementById("qualityAnswer");
@@ -187,17 +258,13 @@ async function checkPhotoQuality(){
   return;
  }
 
- if(!["image/jpeg","image/png","image/webp"].includes(file.type)){
-  result.innerText="JPG, PNG या WEBP फोटो चुनो।";
+ if(!["image/jpeg","image/png","image/webp"].includes(file.type) ||
+ file.size>3*1024*1024){
+  result.innerText="सही JPG, PNG या WEBP फोटो चुनो (3 MB से कम)।";
   return;
  }
 
- if(file.size>3*1024*1024){
-  result.innerText="3 MB से छोटी फोटो चुनो।";
-  return;
- }
-
- result.innerText="फोटो की Quality जाँची जा रही है...";
+ result.innerText="फोटो जाँची जा रही है...";
 
  try{
   const imageBase64=await new Promise((resolve,reject)=>{
@@ -211,35 +278,33 @@ async function checkPhotoQuality(){
    method:"POST",
    headers:{"Content-Type":"application/json"},
    body:JSON.stringify({
-    question:"इस फोटो की गुणवत्ता जाँचो। स्पष्टता, रोशनी, धुंधलापन, रंग और कंपोजिशन का आकलन करो। सुधार के आसान सुझाव दो।",
-    imageBase64,
-    mimeType:file.type
+    question:"इस फोटो की गुणवत्ता, स्पष्टता, रोशनी, रंग और कंपोजिशन जाँचो और सुझाव दो।",
+    imageBase64,mimeType:file.type
    })
   });
 
   const data=await response.json();
   result.innerText=data.answer || data.error || "जाँच पूरी नहीं हुई।";
-
  }catch(error){
   result.innerText="फोटो जाँचने में समस्या हुई।";
  }
 }
 
-// VOICE ASSISTANT
+// VOICE - ORIGINAL ASSISTANT
+let recognition=null;
+let autoActive=false;
+let busy=false;
 
 function createRecognition(){
- const SpeechAPI=window.SpeechRecognition || window.webkitSpeechRecognition;
-
- if(!SpeechAPI){
-  alert("तुम्हारे ब्राउज़र में Voice Recognition उपलब्ध नहीं है। Chrome में कोशिश करो।");
+ const API=window.SpeechRecognition || window.webkitSpeechRecognition;
+ if(!API){
+  alert("Chrome में Voice Recognition की सुविधा उपलब्ध नहीं है।");
   return null;
  }
-
- const r=new SpeechAPI();
+ const r=new API();
  r.lang="hi-IN";
  r.continuous=false;
  r.interimResults=false;
-
  return r;
 }
 
@@ -257,39 +322,27 @@ function startListening(){
   const command=event.results[0][0].transcript;
   document.getElementById("question").value=command;
 
-  if(handleVoiceCommand(command)){
-   busy=false;
-   return;
-  }
-
-  busy=true;
+  if(handleVoiceCommand(command))return;
   await analyze();
  };
 
- recognition.onerror=function(){
-  document.getElementById("answer").innerText="आवाज़ सुनने में समस्या हुई। दोबारा कोशिश करो।";
-  busy=false;
+ recognition.onerror=function(event){
+  document.getElementById("answer").innerText=
+  "आवाज़ सुनने में समस्या: "+event.error;
  };
 
  recognition.onend=function(){
   if(autoActive && !busy){
-   setTimeout(autoListen,800);
+   setTimeout(startListening,1000);
   }
  };
 
- try{
-  recognition.start();
- }catch(error){}
+ try{recognition.start();}catch(error){}
 }
 
 function startAuto(){
  autoActive=true;
- document.getElementById("answer").innerText="JARVIS चालू है। अब बोलकर सवाल पूछो।";
- autoListen();
-}
-
-function autoListen(){
- if(!autoActive || busy)return;
+ document.getElementById("answer").innerText="JARVIS चालू है। बोलिए।";
  startListening();
 }
 
@@ -303,68 +356,378 @@ function stopAuto(){
  document.getElementById("answer").innerText="JARVIS बंद हो गया।";
 }
 
-// VOICE COMMANDS
-
 function handleVoiceCommand(command){
  const c=command.toLowerCase();
 
  if(c.includes("whatsapp") && (c.includes("call") || c.includes("कॉल"))){
-  openWhatsAppCall();
-  return true;
+  openWhatsAppCall();return true;
  }
-
  if(c.includes("whatsapp") || c.includes("व्हाट्सएप")){
-  openWhatsApp();
-  return true;
+  openWhatsApp();return true;
  }
-
- if(c.includes("contact") || c.includes("कॉल") || c.includes("call")){
-  openContact();
-  return true;
+ if(c.includes("youtube") || c.includes("यूट्यूब")){
+  openYouTube();return true;
  }
-
- if(c.includes("youtube")){
-  openYouTube();
-  return true;
+ if(c.includes("google") || c.includes("गूगल")){
+  openGoogle();return true;
  }
-
- if(c.includes("google")){
-  openGoogle();
-  return true;
+ if(c.includes("instagram") || c.includes("इंस्टाग्राम")){
+  pyareOpen("instagram");return true;
  }
-
+ if(c.includes("facebook") || c.includes("फेसबुक")){
+  pyareOpen("facebook");return true;
+ }
+ if(c.includes("समय") || c.includes("time")){
+  tellTime();return true;
+ }
+ if(c.includes("तारीख") || c.includes("date")){
+  tellDate();return true;
+ }
  return false;
 }
 
-// SPEAK ANSWER
-
 function speakAnswer(){
  const text=document.getElementById("answer").innerText;
-
  if(!text)return;
-
- window.speechSynthesis.cancel();
-
+ speechSynthesis.cancel();
  const speech=new SpeechSynthesisUtterance(text);
  speech.lang="hi-IN";
- speech.rate=1;
-
- speech.onend=function(){
-  if(autoActive){
-   busy=false;
-   autoListen();
-  }
- };
-
- window.speechSynthesis.speak(speech);
+ speechSynthesis.speak(speech);
 }
 
 function stopSpeaking(){
- window.speechSynthesis.cancel();
+ if("speechSynthesis" in window)speechSynthesis.cancel();
+}
+
+// JARVIS VOICE SYSTEM
+let jarvisRecognition=null;
+let jarvisAuto=false;
+let jarvisBusy=false;
+
+function pyareSay(text){
+ document.getElementById("pyareResult").innerText=text;
+
+ if("speechSynthesis" in window){
+  speechSynthesis.cancel();
+  const speech=new SpeechSynthesisUtterance(text);
+  speech.lang="hi-IN";
+  speech.rate=1;
+
+  speech.onend=function(){
+   jarvisBusy=false;
+   if(jarvisAuto)jarvisListenAgain();
+  };
+  speechSynthesis.speak(speech);
+ }
+}
+
+function pyareOpen(app){
+ const links={
+  instagram:"https://www.instagram.com/",
+  youtube:"https://www.youtube.com/",
+  facebook:"https://www.facebook.com/",
+  whatsapp:"https://www.whatsapp.com/",
+  google:"https://www.google.com/"
+ };
+ if(links[app])window.open(links[app],"_blank");
+}
+
+function pyareRun(){
+ const input=document.getElementById("pyareCommand");
+ const cmd=input.value.toLowerCase().trim().normalize("NFC");
+ if(!cmd)return;
+
+ // REMINDER VOICE COMMAND
+ const reminderMatch=cmd.match(/(\d+)\s*(मिनट|minute|min|घंटे|घंटा|hour)/i);
+ if(reminderMatch && /(याद|remind|बाद)/i.test(cmd)){
+  const amount=Number(reminderMatch[1]);
+  const unit=reminderMatch[2];
+  const minutes=/घंट|hour/i.test(unit)?amount*60:amount;
+  makeReminder("आपका रिमाइंडर: "+cmd,minutes);
+  return;
+ }
+
+ // TIME AND DATE
+ if(/समय|टाइम|time/i.test(cmd)){
+  pyareSay("अभी समय है "+new Date().toLocaleTimeString("hi-IN"));
+  return;
+ }
+ if(/तारीख|date|आज कौन सा दिन/i.test(cmd)){
+  pyareSay("आज की तारीख है "+new Date().toLocaleDateString("hi-IN",{dateStyle:"full"}));
+  return;
+ }
+
+ // DAILY ROUTINE
+ if(/routine|रूटीन|आज के काम|मेरे काम/i.test(cmd)){
+  const tasks=JSON.parse(localStorage.getItem("pyareRoutine")||"[]");
+  pyareSay(tasks.length?"आपके आज के काम हैं: "+tasks.join(", "):"अभी कोई काम सेव नहीं है।");
+  return;
+ }
+
+ // MEMORY
+ if(/मेरी यादें|memory दिखाओ|क्या याद है/i.test(cmd)){
+  const memories=JSON.parse(localStorage.getItem("pyareMemory")||"[]");
+  pyareSay(memories.length?memories.join(", "):"अभी कोई याद सेव नहीं है।");
+  return;
+ }
+
+ // SAVE MEMORY
+ if(cmd.startsWith("याद रखो") || cmd.startsWith("remember")){
+  const value=cmd.replace(/^याद रखो|^remember/i,"").trim();
+  if(value){
+   const memories=JSON.parse(localStorage.getItem("pyareMemory")||"[]");
+   memories.push(value);
+   localStorage.setItem("pyareMemory",JSON.stringify(memories));
+   pyareSay("यह बात याद रख ली।");
+  }else pyareSay("क्या याद रखना है?");
+  return;
+ }
+
+ // SEARCH
+ if(/search|सर्च|खोज|ढूंढ|ढूँढ/i.test(cmd)){
+  let site="google";
+  let query=cmd;
+
+  if(/instagram|इंस्टाग्राम|इंस्टा/i.test(cmd)){
+   site="instagram";
+   query=query.replace(/instagram|इंस्टाग्राम|इंस्टा/gi,"");
+  }else if(/youtube|यूट्यूब|युट्यूब/i.test(cmd)){
+   site="youtube";
+   query=query.replace(/youtube|यूट्यूब|युट्यूब/gi,"");
+  }else if(/facebook|फेसबुक/i.test(cmd)){
+   site="facebook";
+   query=query.replace(/facebook|फेसबुक/gi,"");
+  }
+
+  query=query.replace(/खोलो|खोल|open|search|सर्च|खोजो|खोज|ढूंढो|ढूँढो|और|पर|par|करो|करना|please|id/gi," ").trim();
+
+  if(!query){
+   pyareSay("क्या सर्च करना है?");
+   return;
+  }
+
+  let url;
+  if(site==="instagram"){
+   url="https://www.instagram.com/"+encodeURIComponent(query.replace(/^@/,""))+"/";
+  }else if(site==="youtube"){
+   url="https://www.youtube.com/results?search_query="+encodeURIComponent(query);
+  }else if(site==="facebook"){
+   url="https://www.facebook.com/search/top?q="+encodeURIComponent(query);
+  }else{
+   url="https://www.google.com/search?q="+encodeURIComponent(query);
+  }
+
+  window.open(url,"_blank");
+  pyareSay("आपकी सर्च खोल रहा हूँ।");
+  return;
+ }
+
+ // OPEN APPS
+ if(/instagram|इंस्टाग्राम|इंस्टा/i.test(cmd)){
+  pyareOpen("instagram");pyareSay("Instagram खोल रहा हूँ।");return;
+ }
+ if(/youtube|यूट्यूब|युट्यूब/i.test(cmd)){
+  pyareOpen("youtube");pyareSay("YouTube खोल रहा हूँ।");return;
+ }
+ if(/facebook|फेसबुक/i.test(cmd)){
+  pyareOpen("facebook");pyareSay("Facebook खोल रहा हूँ।");return;
+ }
+ if(/whatsapp|व्हाट्सएप|व्हाट्सऐप/i.test(cmd)){
+  pyareOpen("whatsapp");pyareSay("WhatsApp खोल रहा हूँ।");return;
+ }
+ if(/google|गूगल/i.test(cmd)){
+  pyareOpen("google");pyareSay("Google खोल रहा हूँ।");return;
+ }
+
+ // CALCULATOR
+ if(/जोड़|गणना|calculate|calculator/i.test(cmd)){
+  pyareSay("गणना करने के लिए Smart Tools में Calculator बॉक्स इस्तेमाल करो।");
+  return;
+ }
+
+ pyareSay("यह कमांड अभी उपलब्ध नहीं है।");
+}
+
+// JARVIS MICROPHONE
+function pyareListen(){
+ jarvisAuto=false;
+ jarvisListenStart();
+}
+
+function jarvisListenStart(){
+ const API=window.SpeechRecognition || window.webkitSpeechRecognition;
+ if(!API){
+  pyareSay("इस ब्राउज़र में Voice Recognition उपलब्ध नहीं है।");
+  return;
+ }
+
+ jarvisRecognition=new API();
+ jarvisRecognition.lang="hi-IN";
+ jarvisRecognition.continuous=false;
+ jarvisRecognition.interimResults=false;
+
+ jarvisRecognition.onresult=function(event){
+  const text=event.results[0][0].transcript;
+  document.getElementById("pyareCommand").value=text;
+  pyareRun();
+ };
+
+ jarvisRecognition.onerror=function(event){
+  jarvisBusy=false;
+  document.getElementById("pyareResult").innerText="माइक्रोफोन Error: "+event.error;
+ };
+
+ jarvisRecognition.onend=function(){
+  if(jarvisAuto && !jarvisBusy){
+   setTimeout(jarvisListenAgain,1000);
+  }
+ };
+
+ try{jarvisRecognition.start();}
+ catch(error){
+  document.getElementById("pyareResult").innerText="माइक शुरू नहीं हो पाया।";
+ }
+}
+
+function jarvisListenAgain(){
+ if(!jarvisAuto || jarvisBusy)return;
+ jarvisListenStart();
+}
+
+function jarvisAutoStart(){
+ jarvisAuto=true;
+ pyareSay("JARVIS चालू है। अब बोलिए।");
+}
+
+function jarvisAutoStop(){
+ jarvisAuto=false;
+ jarvisBusy=false;
+ if(jarvisRecognition){
+  try{jarvisRecognition.stop();}catch(error){}
+ }
+ speechSynthesis.cancel();
+ document.getElementById("pyareResult").innerText="JARVIS बंद हो गया।";
+}
+
+// REMINDERS
+let reminderTimers=[];
+
+function makeReminder(text,minutes){
+ if(!Number.isFinite(minutes)||minutes<1||minutes>10080){
+  pyareSay("एक मिनट से सात दिन के बीच समय बताइए।");
+  return;
+ }
+
+ const timer=setTimeout(()=>{
+  alert("⏰ PYARE AI Reminder\n"+text);
+  if("Notification" in window && Notification.permission==="granted"){
+   new Notification("PYARE AI Reminder",{body:text});
+  }
+ },minutes*60*1000);
+
+ reminderTimers.push(timer);
+ pyareSay(minutes+" मिनट बाद याद दिलाऊँगा।");
+}
+
+function addReminder(){
+ const text=document.getElementById("reminderText").value.trim();
+ const minutes=Number(document.getElementById("reminderMinutes").value);
+
+ if(!text || !minutes){
+  document.getElementById("reminderResult").innerText="काम और मिनट दोनों लिखो।";
+  return;
+ }
+
+ makeReminder(text,minutes);
+ document.getElementById("reminderResult").innerText=
+ text+" — "+minutes+" मिनट बाद याद दिलाऊँगा।";
+
+ if("Notification" in window && Notification.permission==="default"){
+  Notification.requestPermission();
+ }
+}
+
+// DAILY ROUTINE
+function addRoutine(){
+ const input=document.getElementById("routineInput");
+ const value=input.value.trim();
+ if(!value)return;
+
+ const tasks=JSON.parse(localStorage.getItem("pyareRoutine")||"[]");
+ tasks.push(value);
+ localStorage.setItem("pyareRoutine",JSON.stringify(tasks));
+ input.value="";
+ showRoutine();
+}
+
+function showRoutine(){
+ const tasks=JSON.parse(localStorage.getItem("pyareRoutine")||"[]");
+ document.getElementById("routineResult").innerText=
+ tasks.length?tasks.map((x,i)=>(i+1)+". "+x).join("\n"):"आज कोई काम सेव नहीं है।";
+}
+
+function clearRoutine(){
+ localStorage.removeItem("pyareRoutine");
+ showRoutine();
+}
+
+// SMART TOOLS
+function openGoogle(){window.open("https://www.google.com/","_blank")}
+function openYouTube(){window.open("https://www.youtube.com/","_blank")}
+function openCalculator(){window.open("https://www.google.com/search?q=calculator","_blank")}
+
+function tellTime(){
+ const text="अभी समय है: "+new Date().toLocaleTimeString("hi-IN");
+ document.getElementById("toolAnswer").innerText=text;
+}
+
+function tellDate(){
+ const text="आज की तारीख: "+new Date().toLocaleDateString("hi-IN");
+ document.getElementById("toolAnswer").innerText=text;
+}
+
+function calculate(){
+ const input=document.getElementById("calcInput").value.trim();
+ const result=document.getElementById("toolAnswer");
+
+ if(!/^[0-9+\-*/().%\s]+$/.test(input)){
+  result.innerText="केवल गणित के अंक और चिन्ह इस्तेमाल करो।";
+  return;
+ }
+
+ try{
+  const answer=Function('"use strict";return ('+input+')')();
+  result.innerText=Number.isFinite(answer)?"जवाब: "+answer:"गणना नहीं हो सकी।";
+ }catch(error){
+  result.innerText="गणना में गलती है।";
+ }
+}
+
+// MEMORY
+function saveMemory(){
+ const input=document.getElementById("memoryInput");
+ const value=input.value.trim();
+ if(!value)return;
+
+ const memories=JSON.parse(localStorage.getItem("pyareMemory")||"[]");
+ memories.push(value);
+ localStorage.setItem("pyareMemory",JSON.stringify(memories));
+ input.value="";
+ document.getElementById("memoryAnswer").innerText="याद रख लिया।";
+}
+
+function showMemory(){
+ const memories=JSON.parse(localStorage.getItem("pyareMemory")||"[]");
+ document.getElementById("memoryAnswer").innerText=
+ memories.length?memories.join("\n"):"अभी कोई यादें सेव नहीं हैं।";
+}
+
+function clearMemory(){
+ localStorage.removeItem("pyareMemory");
+ document.getElementById("memoryAnswer").innerText="यादें मिटा दी गई हैं।";
 }
 
 // WHATSAPP AND CONTACT
-
 function openWhatsApp(){
  window.open("https://www.whatsapp.com/","_blank");
 }
@@ -375,329 +738,61 @@ function validNumber(){
 
 function openWhatsAppCall(){
  if(!validNumber()){
-  alert("पहले कोड में CONTACT_NUMBER की जगह अपना अनुमति वाला नंबर डालो।");
+  alert("पहले CONTACT_NUMBER में सही नंबर सेट करो।");
   return;
  }
-
  window.open("https://wa.me/"+CONTACT_NUMBER,"_blank");
 }
 
 function openContact(){
  if(!validNumber()){
-  alert("पहले CONTACT_NUMBER में नंबर सेट करो।");
+  alert("पहले CONTACT_NUMBER में सही नंबर सेट करो।");
   return;
  }
-
  window.location.href="tel:+"+CONTACT_NUMBER;
 }
 
-// SMART TOOLS
+// SUPABASE LOGIN
+async function ownerLogin(){
+ const msg=document.getElementById("loginMessage");
+ if(!supabaseClient){
+  msg.innerText="Login सेवा अभी उपलब्ध नहीं है।";
+  return;
+ }
 
-function openGoogle(){
- window.open("https://www.google.com/","_blank");
+ const email=document.getElementById("loginEmail").value.trim();
+ const password=document.getElementById("loginPassword").value;
+ msg.innerText="Login हो रहा है...";
+
+ try{
+  const {error}=await supabaseClient.auth.signInWithPassword({email,password});
+  if(error)throw error;
+  msg.innerText="Login Successful! स्वागत है।";
+ }catch(error){
+  msg.innerText="Login Error: "+error.message;
+ }
 }
 
-function openYouTube(){
- window.open("https://www.youtube.com/","_blank");
-}
+async function ownerSignup(){
+ const msg=document.getElementById("loginMessage");
+ if(!supabaseClient){
+  msg.innerText="Login सेवा अभी उपलब्ध नहीं है।";
+  return;
+ }
 
-function openCalculator(){
- window.open("https://www.google.com/search?q=calculator","_blank");
-}
+ const email=document.getElementById("loginEmail").value.trim();
+ const password=document.getElementById("loginPassword").value;
+ msg.innerText="Signup हो रहा है...";
 
-function tellTime(){
- document.getElementById("toolAnswer").innerText=
- "अभी समय है: "+new Date().toLocaleTimeString("hi-IN");
-}
-
-function tellDate(){
- document.getElementById("toolAnswer").innerText=
- "आज की तारीख: "+new Date().toLocaleDateString("hi-IN");
-}
-
-// MEMORY
-
-function saveMemory(){
- const input=document.getElementById("memoryInput");
- const value=input.value.trim();
-
- if(!value)return;
-
- let memories=JSON.parse(localStorage.getItem("pyareMemory") || "[]");
- memories.push(value);
- localStorage.setItem("pyareMemory",JSON.stringify(memories));
-
- input.value="";
- document.getElementById("memoryAnswer").innerText="याद रख लिया।";
-}
-
-function showMemory(){
- const memories=JSON.parse(localStorage.getItem("pyareMemory") || "[]");
- document.getElementById("memoryAnswer").innerText=
- memories.length ? memories.join("\n") : "अभी कोई यादें सेव नहीं हैं।";
-}
-
-function clearMemory(){
- localStorage.removeItem("pyareMemory");
- document.getElementById("memoryAnswer").innerText="यादें मिटा दी गई हैं।";
-}
-
-</script>
- document.addEventListener("DOMContentLoaded", function () {
-  document.querySelectorAll("button").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      console.log("Button clicked:", btn.innerText);
-    });
-  });
-});
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-const SUPABASE_URL = "https://gukooeyjnjdkxfldxdpv.supabase.co";
-const SUPABASE_KEY = "sb_publishable_XuIgIwnfvtt86GgIijXpwQ_1EUjsHZc";
-
-const supabaseClient = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-</script>
-
-<div id="loginBox" style="background:#111a2b;padding:20px;border-radius:15px;margin:20px;color:white">
-  <h2>PYARE AI Login</h2>
-
-  <input id="loginEmail" type="email" placeholder="Email">
-
-  <input id="loginPassword" type="password" placeholder="Password">
-
-  <button type="button" onclick="ownerLogin()">Login</button>
-  <button type="button" onclick="ownerSignup()">Sign Up</button>
-
-  <p id="loginMessage"></p>
-</div>
-
-<script>
-async function ownerLogin() {
- alert("PYARE AI Login Test");
-  const email = document.getElementById("loginEmail").value.trim();
-  const password = document.getElementById("loginPassword").value;
-  const msg = document.getElementById("loginMessage");
-
-  msg.innerText = "Login हो रहा है...";
-
-  try {
-    const { data, error } = await supabaseClient.auth.signInWithPassword({
-      email,
-      password
-    });
-
-    if (error) throw error;
-
-    msg.innerText = "Login Successful! स्वागत है PYARE AI में।";
-
-  } catch (error) {
-    msg.innerText = "Login Error: " + error.message;
-  }
-}
-
-async function ownerSignup() {
-  const email = document.getElementById("loginEmail").value.trim();
-  const password = document.getElementById("loginPassword").value;
-  const msg = document.getElementById("loginMessage");
-
-  try {
-    const { error } = await supabaseClient.auth.signUp({
-      email,
-      password
-    });
-
-    if (error) throw error;
-
-    msg.innerText = "Signup request सफल हुई।";
-
-  } catch (error) {
-    msg.innerText = "Signup Error: " + error.message;
-  }
+ try{
+  const {error}=await supabaseClient.auth.signUp({email,password});
+  if(error)throw error;
+  msg.innerText="Signup request सफल हुई। Email जाँचो।";
+ }catch(error){
+  msg.innerText="Signup Error: "+error.message;
+ }
 }
 </script>
 
-<!-- PYARE AI SMART ASSISTANT -->
-<style>
-#pyareAssistant{
-  background:#111a2b;
-  color:white;
-  padding:18px;
-  margin:15px;
-  border-radius:18px;
-  font-family:Arial,sans-serif;
-}
-#pyareAssistant button{
-  background:#7c3aed;
-  color:white;
-  border:0;
-  border-radius:10px;
-  padding:12px;
-  margin:5px;
-  font-size:15px;
-}
-#pyareAssistant input{
-  width:95%;
-  padding:12px;
-  border-radius:10px;
-  border:0;
-  margin:8px 0;
-}
-#pyareResult{
-  background:#090d18;
-  padding:12px;
-  border-radius:10px;
-  min-height:45px;
-  margin-top:10px;
-}
-</style>
-
-<div id="pyareAssistant">
-  <h2>🤖 PYARE AI Assistant</h2>
-  <p>बोलकर या लिखकर अपना काम बताओ।</p>
-
-  <input id="pyareCommand"
-    placeholder="जैसे WhatsApp खोलो या YouTube खोलो">
-
-  <button onclick="pyareRun()">चलाओ</button>
-  <button onclick="pyareListen()">🎙️ बोलो</button>
-
-  <div id="pyareResult">मैं आपकी मदद के लिए तैयार हूँ।</div>
-
-  <hr>
-  <button onclick="pyareOpen('instagram')">Instagram</button>
-  <button onclick="pyareOpen('youtube')">YouTube</button>
-  <button onclick="pyareOpen('facebook')">Facebook</button>
-  <button onclick="pyareOpen('whatsapp')">WhatsApp</button>
-  <button onclick="pyareOpen('google')">Google</button>
-</div>
-
-<script>
-function pyareSay(text){
-  document.getElementById("pyareResult").innerText=text;
-  if("speechSynthesis" in window){
-    speechSynthesis.cancel();
-    speechSynthesis.speak(new SpeechSynthesisUtterance(text));
-  }
-}
-
-function pyareOpen(app){
-  const links={
-    instagram:"https://www.instagram.com/",
-    youtube:"https://www.youtube.com/",
-    facebook:"https://www.facebook.com/",
-    whatsapp:"https://www.whatsapp.com/",
-    google:"https://www.google.com/"
-  };
-  window.open(links[app],"_blank");
-}
-
-function pyareRun(){
-  const input = document.getElementById("pyareCommand");
-  const cmd = input.value.toLowerCase().trim().normalize("NFC").replace(/[\u200B-\u200D\uFEFF]/g, "");
-
-  if(!cmd) return;
-
-  // SMART SEARCH
-  if (/(search|सर्च|खोज|ढूंढ|ढूँढ)/i.test(cmd)) {
-
-    let site = "";
-    let query = cmd;
-
-    if (/instagram|इंस्टाग्राम|इंस्टा/i.test(cmd)) {
-      site = "instagram.com";
-      query = query.replace(/instagram|इंस्टाग्राम|इंस्टा/gi, "");
-    }
-    else if (/youtube|यूट्यूब|युट्यूब/i.test(cmd)) {
-      site = "youtube";
-      query = query.replace(/youtube|यूट्यूब|युट्यूब/gi, "");
-    }
-    else if (/facebook|फेसबुक/i.test(cmd)) {
-      site = "facebook";
-      query = query.replace(/facebook|फेसबुक/gi, "");
-    }
-
-    query = query.replace(
-      /खोलो|खोल|open|search|सर्च|खोजो|खोज|ढूंढो|ढूँढो|और|पर|par|करो|करना|please|id/gi,
-      " "
-    ).trim();
-
-    if(query){
-      let url = site === "instagram.com"
-        ? "https://www.instagram.com/" + encodeURIComponent(query.replace(/^@/, "")) + "/"
-        : site === "youtube"
-        ? "https://www.youtube.com/results?search_query=" + encodeURIComponent(query)
-        : site === "facebook"
-        ? "https://www.facebook.com/search/top?q=" + encodeURIComponent(query)
-        : "https://www.google.com/search?q=" + encodeURIComponent(query);
-
-      window.open(url, "_blank");
-      pyareSay("आपकी सर्च खोल रहा हूँ।");
-    } else {
-      pyareSay("क्या सर्च करना है, बताइए।");
-    }
-    return;
-  }
-
-  if(cmd.includes("instagram") || cmd.includes("इंस्टाग्राम") || cmd.includes("इंस्टा")){
-    pyareOpen("instagram");
-    pyareSay("Instagram खोल रहा हूँ।");
-  }
-  else if(cmd.includes("youtube") || cmd.includes("यूट्यूब") || cmd.includes("युट्यूब")){
-    pyareOpen("youtube");
-    pyareSay("YouTube खोल रहा हूँ।");
-  }
-  else if(cmd.includes("facebook") || cmd.includes("फेसबुक")){
-    pyareOpen("facebook");
-    pyareSay("Facebook खोल रहा हूँ।");
-  }
-  else if(cmd.includes("whatsapp") || cmd.includes("व्हाट्सएप") || cmd.includes("व्हाट्सऐप")){
-    pyareOpen("whatsapp");
-    pyareSay("WhatsApp खोल रहा हूँ।");
-  }
-  else if(cmd.includes("google") || cmd.includes("गूगल")){
-    pyareOpen("google");
-    pyareSay("Google खोल रहा हूँ।");
-  }
-  else if(cmd.includes("time") || cmd.includes("समय") || cmd.includes("टाइम")){
-    pyareSay("अभी समय है " + new Date().toLocaleTimeString());
-  }
-  else if(cmd.includes("date") || cmd.includes("तारीख")){
-    pyareSay("आज की तारीख है " + new Date().toLocaleDateString());
-  }
-  else{
-    pyareSay("यह कमांड अभी उपलब्ध नहीं है।");
-  }
-}
-
-
-function pyareListen(){
-  const SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition;
-
-  if(!SpeechRecognition){
-    pyareSay("Voice Recognition उपलब्ध नहीं है।");
-    return;
-  }
-
-  const recognition = new SpeechRecognition();
-  recognition.lang = "hi-IN";
-  recognition.onresult = function(event){
-    const text = event.results[0][0].transcript;
-    document.getElementById("pyareCommand").value = text;
-    pyareRun();
-  };
-
-  
-recognition.onerror = function(event){
-    pyareSay("माइक्रोफोन Error: " + event.error);
-};
-  recognition.start();
-}
-</script>
 </body>
-</html> 
+</html>
