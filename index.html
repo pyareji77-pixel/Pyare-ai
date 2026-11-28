@@ -436,6 +436,7 @@ function pyareOpen(app){
 async function pyareRun(){
  const input=document.getElementById("pyareCommand");
  const cmd=input.value.toLowerCase().trim().normalize("NFC");
+ jarvisBusy=true;
  const result=document.getElementById("pyareResult");
  if(!cmd)return;
 
