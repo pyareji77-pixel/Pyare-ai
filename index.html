@@ -792,12 +792,23 @@ function openWhatsAppCall(){
  window.open("https://wa.me/"+CONTACT_NUMBER,"_blank");
 }
 
+function openNewWhatsApp(){
+ const number=document.getElementById("newWhatsAppNumber").value.replace(/\D/g,"");
+
+ if(number.length<10 || number.length>15){
+  alert("+91 95341 59324।");
+  return;
+ }
+
+ window.open("https://wa.me/"+nambar ,"_blank");
+}
+
 function openContact(){
  if(!validNumber()){
   alert("पहले CONTACT_NUMBER में सही नंबर सेट करो।");
   return;
  }
- window.location.href="tel:+"+CONTACT_NUMBER;
+ window.location.href="tel:+"+91 95341 59324;
 }
 
 // SUPABASE LOGIN
